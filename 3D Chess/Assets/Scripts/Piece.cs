@@ -18,38 +18,39 @@ public enum TeamColour
     Black
 };
 
+public struct Move
+{
+    public Move(Cell cell_ref, MoveType type) { cell = cell_ref; move_type = type; }
+    public Cell cell;
+    public enum MoveType { Regular, Attack };
+    public MoveType move_type;
+};
+
 public abstract class Piece : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        piece_init();
-    }
+    void Start() {}
 
     // Update is called once per frame
-    void Update()
-    {
-        piece_update();
-    }
+    void Update() {}
 
-    public abstract List<Cell> find_valid_moves();
+    public abstract List<Move> find_valid_moves();
 
     public GameObject validMoveHighlightPrefab;
+    public GameObject attackMoveHighlightPrefab;
 
     public void piece_init()
     {
+        if (colour == TeamColour.Black) transform.eulerAngles = new Vector3(0f, 180f, 0f);
+        else transform.eulerAngles = Vector3.zero;
+
         // find board
         board = GameObject.FindGameObjectWithTag("Main Board").GetComponent<Board>();
         // find closest cell
         look_for_cell();
     }
 
-    public void piece_update()
-    {
-        if (cell==null) look_for_cell();
-    }
-
-    private void look_for_cell()
+    public void look_for_cell()
     {
         // find closest cell
         Cell best_cell = null;
@@ -62,10 +63,7 @@ public abstract class Piece : MonoBehaviour
                 best_cell = cell.GetComponent<Cell>();
             }
         }
-        if (best_cell != null) {
-            cell = best_cell;
-            transform.position = best_cell.transform.position;
-        }
+        if (best_cell != null) Cell = best_cell;
     }
 
     [HideInInspector]
@@ -80,14 +78,20 @@ public abstract class Piece : MonoBehaviour
     public TeamColour Colour 
     {
         get => colour;
-        set => colour = value;
+        set {
+            colour = value;
+            if (colour == TeamColour.Black) transform.eulerAngles = new Vector3(0f, 180f, 0f);
+            else transform.eulerAngles = Vector3.zero;
+        }
     }
 
     public Cell Cell
     {
         get => cell;
         set {
+            if (cell!=null) cell.occupant = null;
             cell = value;
+            cell.occupant = this;
             transform.position = cell.transform.position;
         }
     }
@@ -101,7 +105,17 @@ public abstract class Piece : MonoBehaviour
 
     [ContextMenu("Show Moves")]
     public void ShowMoves() {
-        List<Cell> moves = this.find_valid_moves();
-        foreach (Cell cell in moves) Instantiate(validMoveHighlightPrefab, cell.transform);
+        List<Move> moves = find_valid_moves();
+        foreach (Move move in moves) {
+            if (move.move_type==Move.MoveType.Regular) Instantiate(validMoveHighlightPrefab, move.cell.transform.position, Quaternion.identity, transform);
+            else if (move.move_type == Move.MoveType.Attack) Instantiate(attackMoveHighlightPrefab, move.cell.transform.position, Quaternion.identity, transform);
+        }
+    }
+
+    [ContextMenu("Hide Moves")]
+    public void HideMoves() {
+        foreach (Transform child in transform) {
+            if (child.tag == "Cell Highlight") Destroy(child.gameObject);
+        }
     }
 }

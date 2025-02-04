@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 3
   tags:
   - Main Board
+  - Cell Highlight
   layers:
   - Default
   - TransparentFX
