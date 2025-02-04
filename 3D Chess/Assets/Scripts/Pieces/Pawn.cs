@@ -7,12 +7,13 @@ public class Pawn : Piece
     void Start()
     {
         Type = PieceType.Pawn;
+        piece_init();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        piece_update();
     }
 
     public override List<Cell> find_valid_moves()
@@ -27,7 +28,7 @@ public class Pawn : Piece
 
         index = Cell.index;
         // vertical movement
-        index.z += (Colour==TeamColour.White)? -1 : 1;
+        index.y += (Colour==TeamColour.White)? -1 : 1;
         cell = board.GetCellAt(index);
         if (cell!=null) res.Add(cell);
 
