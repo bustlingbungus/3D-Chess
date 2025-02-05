@@ -1,6 +1,9 @@
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+using Unity.VisualScripting;
+using UnityEditor;
 
 public enum PieceType
 {
@@ -44,10 +47,20 @@ public abstract class Piece : MonoBehaviour
         if (colour == TeamColour.Black) transform.eulerAngles = new Vector3(0f, 180f, 0f);
         else transform.eulerAngles = Vector3.zero;
 
+        movement_timer = travelTime;
+
         // find board
         board = GameObject.FindGameObjectWithTag("Main Board").GetComponent<Board>();
         // find closest cell
         look_for_cell();
+    }
+
+    public void piece_update()
+    {
+        if (Cell==null) look_for_cell();
+
+        transform.position = pos_interp(init_pos, cell.transform.position, movement_timer/travelTime);
+        movement_timer = Mathf.Clamp(movement_timer+Time.deltaTime, 0f, travelTime);
     }
 
     public void look_for_cell()
@@ -89,12 +102,29 @@ public abstract class Piece : MonoBehaviour
     {
         get => cell;
         set {
-            if (cell!=null) cell.occupant = null;
-            cell = value;
-            cell.occupant = this;
-            transform.position = cell.transform.position;
+            if (value != null) {
+                if (cell!=null) {
+                    cell.occupant = null;
+                    init_pos = cell.transform.position;
+                }
+                cell = value;
+                if (cell.occupant!=null) Destroy(cell.occupant.gameObject);
+                cell.occupant = this;
+                movement_timer = 0f;
+            }
         }
     }
+
+
+    [SerializeField]
+    private float travelTime = 0.75f;
+    private float movement_timer = 0f;
+    private Vector3 init_pos = Vector3.zero;
+    private Vector3 pos_interp(Vector3 a, Vector3 b, float t) {
+        t = 0.5f*(Mathf.Sin(Mathf.PI*(t-0.5f))+1f);
+        return a + t*(b - a);
+    }
+
 
 
     private Cell cell;

@@ -13,7 +13,7 @@ public class Knight : Piece
     // Update is called once per frame
     void Update()
     {
-        if (Cell==null) look_for_cell();
+        piece_update();
     }
 
     public override List<Move> find_valid_moves()

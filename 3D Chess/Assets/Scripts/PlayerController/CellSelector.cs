@@ -3,9 +3,8 @@ using UnityEngine;
 public class CellSelector : MonoBehaviour
 {
     [SerializeField]
-    private KeyCode next_move = KeyCode.RightArrow,
-                    prev_move = KeyCode.LeftArrow,
-                    select = KeyCode.Return;
+    private KeyCode select = KeyCode.Return,
+                    cancel = KeyCode.Escape;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -16,7 +15,23 @@ public class CellSelector : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetKeyDown(select)) {
+            if (move_select.enabled) {
+                RaiseAlpha();
+                move_select.SelectCurrent();
+                move_select.enabled = false;
+                movement_controls.enabled = true;
+            } else if (cell!=null && cell.occupant!=null) {
+                LowerAlpha();
+                move_select.enabled = true;
+                move_select.GetMoves(cell.occupant);
+                movement_controls.enabled = false;
+            }
+        } else if (Input.GetKeyDown(cancel) && move_select.enabled) {
+            RaiseAlpha();
+            move_select.enabled = false;
+            movement_controls.enabled = true;
+        }
     }
 
     public Cell Cell
@@ -36,6 +51,8 @@ public class CellSelector : MonoBehaviour
 
     [SerializeField]
     private MoveSelector move_select;
+    [SerializeField]
+    private SelectorMover movement_controls;
 
 
 
