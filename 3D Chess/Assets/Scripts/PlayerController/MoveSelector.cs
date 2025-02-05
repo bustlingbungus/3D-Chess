@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.Rendering;
 using Unity.VisualScripting;
+using Defs;
 
 public class MoveSelector : MonoBehaviour
 {

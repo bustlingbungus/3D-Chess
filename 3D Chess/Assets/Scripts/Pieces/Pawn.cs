@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Defs;
 
 public class Pawn : Piece
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        Type = PieceType.Pawn;
-        piece_init();
+        piece_init(PieceType.Pawn);
     }
 
     // Update is called once per frame
@@ -23,23 +23,23 @@ public class Pawn : Piece
 
         // forwards movement
         index.x += (Colour==TeamColour.White)? 1 : -1;
-        Cell cell = board.GetCellAt(index);
+        Cell cell = _board.GetCellAt(index);
         if (cell!=null && cell.occupant==null) res.Add(new Move(cell, Move.MoveType.Regular));
 
         index = Cell.index;
         // vertical movement
         index.y += (Colour==TeamColour.White)? -1 : 1;
-        cell = board.GetCellAt(index);
+        cell = _board.GetCellAt(index);
         if (cell!=null && cell.occupant==null) res.Add(new Move(cell, Move.MoveType.Regular));
 
         // diagonal attack 1
         index.x += (Colour==TeamColour.White)? 1 : -1;
         index.z += 1;
-        cell = board.GetCellAt(index);        
+        cell = _board.GetCellAt(index);        
         if (cell!=null && cell.occupant!=null && cell.occupant.Colour!=Colour) res.Add(new Move(cell, Move.MoveType.Attack));
         
         index.z -= 2;
-        cell = board.GetCellAt(index);        
+        cell = _board.GetCellAt(index);        
         if (cell!=null && cell.occupant!=null && cell.occupant.Colour!=Colour) res.Add(new Move(cell, Move.MoveType.Attack));
 
         return res;

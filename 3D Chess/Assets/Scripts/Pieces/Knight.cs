@@ -1,13 +1,13 @@
 using UnityEngine;
 using System.Collections.Generic;
+using Defs;
 
 public class Knight : Piece
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        Type = PieceType.Knight;
-        piece_init();
+        piece_init(PieceType.Knight);
     }
 
     // Update is called once per frame
@@ -23,7 +23,7 @@ public class Knight : Piece
         // x +/-2 routes
         for (int i=0; i<8; i++) {
             Vector3Int disp = new Vector3Int(i<4?-2:2, i%2==0?i%4==0?-1:1:0, i%2==1?i%4==1?-1:1:0);
-            Cell cell = board.GetCellAt(Cell.index + disp);
+            Cell cell = _board.GetCellAt(Cell.index + disp);
             if (cell != null) {
                 if (cell.occupant==null) res.Add(new Move(cell, Move.MoveType.Regular));
                 else if (cell.occupant.Colour!=Colour) res.Add(new Move(cell, Move.MoveType.Attack));
@@ -32,7 +32,7 @@ public class Knight : Piece
         // y +/-2 routes
         for (int i=0; i<8; i++) {
             Vector3Int disp = new Vector3Int(i%2==0?i%4==0?-1:1:0, i<4?-2:2, i%2==1?i%4==1?-1:1:0);
-            Cell cell = board.GetCellAt(Cell.index + disp);
+            Cell cell = _board.GetCellAt(Cell.index + disp);
             if (cell != null) {
                 if (cell.occupant==null) res.Add(new Move(cell, Move.MoveType.Regular));
                 else if (cell.occupant.Colour!=Colour) res.Add(new Move(cell, Move.MoveType.Attack));
@@ -41,7 +41,7 @@ public class Knight : Piece
         // z +/-2 routes
         for (int i=0; i<8; i++) {
             Vector3Int disp = new Vector3Int(i%2==0?i%4==0?-1:1:0, i%2==1?i%4==1?-1:1:0, i<4?-2:2);
-            Cell cell = board.GetCellAt(Cell.index + disp);
+            Cell cell = _board.GetCellAt(Cell.index + disp);
             if (cell != null) {
                 if (cell.occupant==null) res.Add(new Move(cell, Move.MoveType.Regular));
                 else if (cell.occupant.Colour!=Colour) res.Add(new Move(cell, Move.MoveType.Attack));
