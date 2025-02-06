@@ -1,4 +1,5 @@
 using UnityEngine;
+using Defs;
 
 public class CellSelector : MonoBehaviour
 {
@@ -21,7 +22,8 @@ public class CellSelector : MonoBehaviour
                 move_select.SelectCurrent();
                 move_select.enabled = false;
                 movement_controls.enabled = true;
-            } else if (cell!=null && cell.occupant!=null) {
+                current_player = current_player==TeamColour.White?TeamColour.Black:TeamColour.White;
+            } else if (cell!=null && cell.occupant!=null && cell.occupant.Colour==current_player) {
                 LowerAlpha();
                 move_select.enabled = true;
                 move_select.GetMoves(cell.occupant);
@@ -42,10 +44,12 @@ public class CellSelector : MonoBehaviour
                 if (cell!=null && cell.occupant!=null) cell.occupant.HideMoves();
                 cell = value;
                 transform.position = cell.transform.position;
-                if (cell.occupant!=null) cell.occupant.ShowMoves();
+                if (cell.occupant!=null && cell.occupant.Colour==current_player) cell.occupant.ShowMoves();
             }
         }
     }
+
+    private TeamColour current_player = TeamColour.White;
 
     private Cell cell;
 
