@@ -20,88 +20,41 @@ public class Queen : Piece
     {
         List<Move> res = new List<Move>();
 
-        // negative along x axis
-        for (Vector3Int index=Cell.index+new Vector3Int(-1,0,0); index.x>=0; index.x--)
-        {
-            Cell curr = _board.GetCellAt(index);
-            if (curr==null) break;
-            if (curr.occupant!=null) {
-                if (curr.occupant.Colour!=Colour) res.Add(new Move(curr, Move.MoveType.Attack));
-                break;
-            }
-            res.Add(new Move(curr, Move.MoveType.Regular));
-        }
-        // positive along x axis
-        for (Vector3Int index=Cell.index+new Vector3Int(1,0,0); index.x<_board.grid_dimensions.x; index.x++)
-        {
-            Cell curr = _board.GetCellAt(index);
-            if (curr==null) break;
-            if (curr.occupant!=null) {
-                if (curr.occupant.Colour!=Colour) res.Add(new Move(curr, Move.MoveType.Attack));
-                break;
-            }
-            res.Add(new Move(curr, Move.MoveType.Regular));
-        }
-        
-        // negative along y axis
-        for (Vector3Int index=Cell.index+new Vector3Int(0,-1,0); index.y>=0; index.y--)
-        {
-            Cell curr = _board.GetCellAt(index);
-            if (curr==null) break;
-            if (curr.occupant!=null) {
-                if (curr.occupant.Colour!=Colour) res.Add(new Move(curr, Move.MoveType.Attack));
-                break;
-            }
-            res.Add(new Move(curr, Move.MoveType.Regular));
-        }
-        // positive along y axis
-        for (Vector3Int index=Cell.index+new Vector3Int(0,1,0); index.y<_board.grid_dimensions.y; index.y++)
-        {
-            Cell curr = _board.GetCellAt(index);
-            if (curr==null) break;
-            if (curr.occupant!=null) {
-                if (curr.occupant.Colour!=Colour) res.Add(new Move(curr, Move.MoveType.Attack));
-                break;
-            }
-            res.Add(new Move(curr, Move.MoveType.Regular));
-        }
-        
-        // negative along z axis
-        for (Vector3Int index=Cell.index+new Vector3Int(0,0,-1); index.z>=0; index.z--)
-        {
-            Cell curr = _board.GetCellAt(index);
-            if (curr==null) break;
-            if (curr.occupant!=null) {
-                if (curr.occupant.Colour!=Colour) res.Add(new Move(curr, Move.MoveType.Attack));
-                break;
-            }
-            res.Add(new Move(curr, Move.MoveType.Regular));
-        }
-        // positive along z axis
-        for (Vector3Int index=Cell.index+new Vector3Int(0,0,1); index.z<_board.grid_dimensions.z; index.z++)
-        {
-            Cell curr = _board.GetCellAt(index);
-            if (curr==null) break;
-            if (curr.occupant!=null) {
-                if (curr.occupant.Colour!=Colour) res.Add(new Move(curr, Move.MoveType.Attack));
-                break;
-            }
-            res.Add(new Move(curr, Move.MoveType.Regular));
+        bool index_in_bounds(Vector3Int idx) {
+            return idx.x>=0 && idx.y>=0 && idx.z>=0 &&
+                   idx.x<_board.grid_dimensions.x &&
+                   idx.y<_board.grid_dimensions.y &&
+                   idx.z<_board.grid_dimensions.z;
         }
 
+        // orthogonal movements
+        for (int i=0; i<6; i++)
+        {
+            // find displacement by i's value
+            Vector3Int disp = new Vector3Int(i<2?1:0,i<4&&i>1?1:0,i<6&&i>3?1:0);
+            if (i%2==1) disp *= -1;
+
+            // check current displacement
+            for (Vector3Int index = Cell.index+disp;index_in_bounds(index);index += disp)
+            {
+                Cell curr = _board.GetCellAt(index);
+                if (curr==null) break;
+                if (curr.occupant!=null) {
+                    if (curr.occupant.Colour!=Colour) res.Add(new Move(curr, Move.MoveType.Attack));
+                    break;
+                }
+                res.Add(new Move(curr, Move.MoveType.Regular));
+            }
+        }
 
         // diagonals
         for (int i=0; i<8; i++)
         {
             // find displacement with binary counting
-            Vector3Int disp = new Vector3Int(
-                (i&4)!=0? 1 : -1,
-                (i&2)!=0? 1 : -1,
-                (i&1)!=0? 1 : -1
-            );
+            Vector3Int disp = new Vector3Int((i&4)!=0?1:-1,(i&2)!=0?1:-1,(i&1)!=0?1:-1);
 
             // check current displacement
-            for (Vector3Int index = Cell.index+disp;index.x<_board.grid_dimensions.x&&index.y<_board.grid_dimensions.y&&index.z<_board.grid_dimensions.z;index += disp)
+            for (Vector3Int index = Cell.index+disp;index_in_bounds(index);index += disp)
             {
                 Cell curr = _board.GetCellAt(index);
                 if (curr==null) break;
