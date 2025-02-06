@@ -44,7 +44,7 @@ namespace Defs
 
 
     /// <summary>
-    /// Node in the camera node graph. Contains  a position and rotation
+    /// Node in the camera node graph. Contains a position and rotation
     /// </summary>
     public class CameraNode
     {
@@ -52,51 +52,5 @@ namespace Defs
         public Vector3 position;
         public Vector3 eulerAngles;
         public int idx;
-    }
-
-    public enum GraphDirection { NoConnection, Up, Left, Down, Right }
-
-    public class CameraGraph
-    {
-        public CameraGraph() { 
-            mat = new List<List<GraphDirection>>(); 
-            nodes = new List<CameraNode>();
-        }
-
-        public int AddNode(Vector3 position, Vector3 rotation)
-        {
-            int n = nodes.Count;
-            CameraNode res = new CameraNode(position, rotation, n);
-
-            mat.Add(new List<GraphDirection>(new GraphDirection[10]));
-            foreach (List<GraphDirection> row in mat) {
-                row.Add(GraphDirection.NoConnection);
-            }
-            nodes.Add(res); 
-            return n;
-        }
-
-        public void AddEdge(int src, int dst, GraphDirection dir)
-        {
-            mat[src][dst] = dir;
-        }
-
-        public List<CameraNode> GetOut(int src, GraphDirection dir)
-        {
-            List<CameraNode> res = new List<CameraNode>();
-            for (int i=0; i<nodes.Count; i++) {
-                if (mat[src][i]==dir) res.Add(nodes[i]);
-            }
-            return res;
-        }
-
-        public CameraNode GetNodeAt(int idx) 
-        { 
-            // Debug.Log(nodes[idx].position);
-            return nodes[idx]; 
-        }
-
-        private List<List<GraphDirection>> mat;
-        private List<CameraNode> nodes;
     }
 }
