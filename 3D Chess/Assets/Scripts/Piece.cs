@@ -8,21 +8,34 @@ using Defs;
 
 /// <summary>
 /// 
-/// <para>The base class for all pieces on the board. On intstantiation, a piece will correct its position to the centre of the 
-/// cell it inhabits.</para>
+/// <para>
+/// The base class for all pieces on the board. On intstantiation, a piece will correct its position to the centre of the 
+/// cell it inhabits.
+/// </para>
 /// 
-/// <para><b>Setting Colour and Type</b></para>
+/// <para><b>
+/// Setting Colour and Type
+/// </b></para>
 /// 
-/// <para>Piece has two variable traits, <c>colour</c> and <c>type</c>. <c>Colour</c> is in reference to the 
-/// player that controls the piece, e.g., white/black. <c>Type</c> is in reference to what the piece is, e.g., pawn, rook, etc.</para>
+/// <para>
+/// Piece has two variable traits, <c>colour</c> and <c>type</c>. <c>Colour</c> is in reference to the 
+/// player that controls the piece, e.g., white/black. <c>Type</c> is in reference to what the piece is, e.g., pawn, rook, etc.
+/// </para>
 /// 
 /// <para><list type="bullet">
+/// 
 /// <item>
-/// <description> <c>Colour</c> should be specified manually through the serialized field in the Unity inspector.</description>
+/// <description> <c>Colour</c> should be specified manually through the serialized field in the Unity inspector. </description>
 /// </item>
+/// 
 /// <item>
-/// <description> <c>Type</c> should be specified in the subclass' <c>Start</c> function, using <c>piece_init</c>.
-/// <example> <para><b>Example:</b></para>
+/// <description> 
+/// <c>Type</c> should be specified in the subclass' <c>Start</c> function, using <c>piece_init</c>.
+/// 
+/// <example><para><b>
+/// Example:
+/// </b></para>
+/// 
 /// <code>
 /// public class Pawn : Piece
 /// {
@@ -32,21 +45,31 @@ using Defs;
 ///         piece_init(PieceType.Pawn);     &lt;----- SET PIECE TYPE HERE
 ///     }
 ///     ...
+///
 /// </code></example>
 /// </description></item>
 /// </list></para>
 /// 
-/// <para><b>Notes:</b></para>
+/// <para><b>
+/// Notes:
+/// </b></para>
 /// 
 /// <list type="bullet">
+/// 
 /// <item>
-/// <description>A subclass' <c>Start</c> function should contain a call to the <c>piece_init</c> function. This function initialises
-/// the piece's position and assigns provate members.</description>
+/// <description>
+/// A subclass' <c>Start</c> function should contain a call to the <c>piece_init</c> function. This function initialises
+/// the piece's position and assigns provate members.
+/// </description>
 /// </item>
+/// 
 /// <item>
-/// <description>A subclass' <c>Update</c> function should contain a call to the <c>piece_update</c> function. This function handles the
-/// piece's movement between cells.</description>
+/// <description>
+/// A subclass' <c>Update</c> function should contain a call to the <c>piece_update</c> function. This function handles the
+/// piece's movement between cells.
+/// </description>
 /// </item>
+/// 
 /// </list>
 /// 
 /// </summary>

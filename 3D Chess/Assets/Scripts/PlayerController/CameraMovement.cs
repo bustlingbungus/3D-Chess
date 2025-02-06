@@ -17,12 +17,12 @@ public class CameraMovement : MonoBehaviour
     {
         graph = new AdjacencyGraph<CameraNode>();
 
-        graph.AddNode(new CameraNode(new Vector3(0,0,-25), new Vector3(0,0,0), 0));    // 0    front face
-        graph.AddNode(new CameraNode(new Vector3(25,0,0), new Vector3(0,-90,0), 1));   // 1    right face
-        graph.AddNode(new CameraNode(new Vector3(0,0,25), new Vector3(0,180,0), 2));   // 2    back face
-        graph.AddNode(new CameraNode(new Vector3(-25,0,0), new Vector3(0,90,0), 3));   // 3    left face
-        graph.AddNode(new CameraNode(new Vector3(0,25,0), new Vector3(90,0,0), 4));    // 4    top face
-        graph.AddNode(new CameraNode(new Vector3(0,-25,0), new Vector3(-90,0,0), 5));  // 5    bottom face
+        graph.AddVertex(new CameraNode(new Vector3(0,0,-25), new Vector3(0,0,0), 0));    // 0    front face
+        graph.AddVertex(new CameraNode(new Vector3(25,0,0), new Vector3(0,-90,0), 1));   // 1    right face
+        graph.AddVertex(new CameraNode(new Vector3(0,0,25), new Vector3(0,180,0), 2));   // 2    back face
+        graph.AddVertex(new CameraNode(new Vector3(-25,0,0), new Vector3(0,90,0), 3));   // 3    left face
+        graph.AddVertex(new CameraNode(new Vector3(0,25,0), new Vector3(90,0,0), 4));    // 4    top face
+        graph.AddVertex(new CameraNode(new Vector3(0,-25,0), new Vector3(-90,0,0), 5));  // 5    bottom face
 
         // front face connections
         graph.AddEdge(0, 1, GraphDirection.Right);
@@ -55,7 +55,7 @@ public class CameraMovement : MonoBehaviour
         graph.AddEdge(5, 3, GraphDirection.Left);
         graph.AddEdge(5, 2, GraphDirection.Down);
 
-        curr_node = graph.GetElemAt(0);
+        curr_node = graph.GetVertexAt(0);
     }
 
     // Update is called once per frame
