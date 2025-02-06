@@ -63,5 +63,5 @@ public class Board : MonoBehaviour
     // private Cell[,,] grid;
 
     [SerializeField]
-    private Vector3Int grid_dimensions = new Vector3Int(8, 8, 8);
+    public Vector3Int grid_dimensions = new Vector3Int(8, 8, 8);
 }
