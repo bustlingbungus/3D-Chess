@@ -5328,6 +5328,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3ca608551048bc4992b70c2c7bccc98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  panUp: 105
+  panDown: 107
+  panLeft: 106
+  panRight: 108
 --- !u!1 &331992898
 GameObject:
   m_ObjectHideFlags: 0
