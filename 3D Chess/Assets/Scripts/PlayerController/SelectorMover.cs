@@ -7,11 +7,11 @@ public class SelectorMover : MonoBehaviour
 
     [SerializeField]
     private KeyCode positiveX = KeyCode.W,
-                   negativeX = KeyCode.S,
-                   positiveY = KeyCode.UpArrow,
-                   negativeY = KeyCode.DownArrow,
-                   positiveZ = KeyCode.A,
-                   negativeZ = KeyCode.D;
+                    negativeX = KeyCode.S,
+                    positiveY = KeyCode.UpArrow,
+                    negativeY = KeyCode.DownArrow,
+                    positiveZ = KeyCode.A,
+                    negativeZ = KeyCode.D;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

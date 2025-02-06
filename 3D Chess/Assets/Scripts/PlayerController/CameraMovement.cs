@@ -56,20 +56,51 @@ public class CameraMovement : MonoBehaviour
         graph.AddEdge(5, 2, GraphDirection.Down);
 
         curr_node = graph.GetVertexAt(0);
+        prev_pos = transform.position = curr_node.position;
+        prev_rot = transform.eulerAngles = curr_node.eulerAngles;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(panUp))    curr_node = graph.GetFirstOutgoing(curr_node.idx, GraphDirection.Up);
-        else if (Input.GetKeyDown(panDown))  curr_node = graph.GetFirstOutgoing(curr_node.idx, GraphDirection.Down);
-        else if (Input.GetKeyDown(panLeft))  curr_node = graph.GetFirstOutgoing(curr_node.idx, GraphDirection.Left);
-        else if (Input.GetKeyDown(panRight)) curr_node = graph.GetFirstOutgoing(curr_node.idx, GraphDirection.Right);
+        if (Input.GetKeyDown(panUp))    Node = graph.GetFirstOutgoing(Node.idx, GraphDirection.Up);
+        else if (Input.GetKeyDown(panDown))  Node = graph.GetFirstOutgoing(Node.idx, GraphDirection.Down);
+        else if (Input.GetKeyDown(panLeft))  Node = graph.GetFirstOutgoing(Node.idx, GraphDirection.Left);
+        else if (Input.GetKeyDown(panRight)) Node = graph.GetFirstOutgoing(Node.idx, GraphDirection.Right);
 
-        transform.position = curr_node.position;
-        transform.eulerAngles = curr_node.eulerAngles;
+
+        float t = move_timer / travelTime;
+        transform.position = interp(prev_pos, Node.position, t);
+        transform.eulerAngles = interp(prev_rot, Node.eulerAngles, t);
+        
+        move_timer = Mathf.Clamp(move_timer+Time.deltaTime, 0f, travelTime);
     }
 
     private AdjacencyGraph<CameraNode> graph;
     private CameraNode curr_node;
+
+
+    private CameraNode Node
+    {
+        get => curr_node;
+        set {
+            if (value!=null) {
+                prev_pos = curr_node.position;
+                prev_rot = curr_node.eulerAngles;
+                move_timer = 0f;
+                curr_node = value;
+            }
+        }
+    }
+
+    private Vector3 interp(Vector3 a, Vector3 b, float t) {
+        return a + t*(b - a);
+    }
+
+
+    private Vector3 prev_pos, prev_rot;
+
+    private float move_timer;
+    [SerializeField]
+    private float travelTime = 0.25f;
 }
