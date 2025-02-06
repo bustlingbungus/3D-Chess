@@ -22,7 +22,7 @@ public class CellSelector : MonoBehaviour
                 move_select.SelectCurrent();
                 move_select.enabled = false;
                 movement_controls.enabled = true;
-                current_player = current_player==TeamColour.White?TeamColour.Black:TeamColour.White;
+                ChangeTurn();
             } else if (cell!=null && cell.occupant!=null && cell.occupant.Colour==current_player) {
                 LowerAlpha();
                 move_select.enabled = true;
@@ -84,5 +84,11 @@ public class CellSelector : MonoBehaviour
                 }
             }
         }
+    }
+
+
+    [ContextMenu("Change Turn")]
+    public void ChangeTurn() {
+        current_player = current_player==TeamColour.White?TeamColour.Black:TeamColour.White;
     }
 }
