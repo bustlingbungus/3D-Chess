@@ -4915,11 +4915,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8035650433929012482, guid: 4a6469363947d51469d20b6abfbb715e, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 8.195423
+      value: 8.21
       objectReference: {fileID: 0}
     - target: {fileID: 8035650433929012482, guid: 4a6469363947d51469d20b6abfbb715e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -8.276474
+      value: -8.402
       objectReference: {fileID: 0}
     - target: {fileID: 8035650433929012482, guid: 4a6469363947d51469d20b6abfbb715e, type: 3}
       propertyPath: m_LocalPosition.z
@@ -5332,6 +5332,7 @@ MonoBehaviour:
   panDown: 107
   panLeft: 106
   panRight: 108
+  travelTime: 0.25
 --- !u!1 &331992898
 GameObject:
   m_ObjectHideFlags: 0
