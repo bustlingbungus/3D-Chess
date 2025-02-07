@@ -19,6 +19,7 @@ public class King : Piece
     public override List<Move> find_valid_moves()
     {
         List<Move> res = new List<Move>();
+        TeamColour opposite_colour = Colour==TeamColour.White?TeamColour.Black:TeamColour.White;
 
         // orthogonal movements
         for (int i=0; i<6; i++)
@@ -33,7 +34,7 @@ public class King : Piece
             if (curr.occupant!=null) {
                 if (curr.occupant.Colour!=Colour) res.Add(new Move(curr, Move.MoveType.Attack));
                 break;
-            }
+            } else if (curr.attackers[opposite_colour].Count!=0) continue;
             res.Add(new Move(curr, Move.MoveType.Regular));
         }
 
@@ -49,7 +50,7 @@ public class King : Piece
             if (curr.occupant!=null) {
                 if (curr.occupant.Colour!=Colour) res.Add(new Move(curr, Move.MoveType.Attack));
                 continue;
-            }
+            } else if (curr.attackers[opposite_colour].Count!=0) continue;
             res.Add(new Move(curr, Move.MoveType.Regular));
         }
 
@@ -63,7 +64,7 @@ public class King : Piece
             if (curr.occupant!=null) {
                 if (curr.occupant.Colour!=Colour) res.Add(new Move(curr, Move.MoveType.Attack));
                 continue;
-            }
+            } else if (curr.attackers[opposite_colour].Count!=0) continue;
             res.Add(new Move(curr, Move.MoveType.Regular));
         }
 

@@ -95,8 +95,15 @@ public class Board : MonoBehaviour
     /// Toggles the index rendering for all cells in the grid.
     /// </summary>
     [ContextMenu("Toggle Indices")]
-    public void ToggleIndices()
-    {
+    public void ToggleIndices() {
         foreach (Cell cell in grid) cell.ToggleIndexDisplay();
+    }
+
+    /// <summary>
+    /// Updates every cell's lists of attacking cells.
+    /// </summary>
+    [ContextMenu("Update Attackers")]
+    public void UpdateAttackers() {
+        foreach (Cell cell in grid) cell.update_attackers();
     }
 }

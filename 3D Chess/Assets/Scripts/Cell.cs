@@ -1,4 +1,7 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Defs;
+using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 
 /// <summary>
@@ -11,7 +14,11 @@ public class Cell : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        // initialise attackers 
+        attackers = new Dictionary<TeamColour,List<Piece>>();
+        // i know it says initialisation can be simplified, but trust me the alternative is ugly and less simple.
+        attackers.Add(TeamColour.White, new List<Piece>());
+        attackers.Add(TeamColour.Black, new List<Piece>());
     }
 
     // Update is called once per frame
@@ -35,4 +42,35 @@ public class Cell : MonoBehaviour
 
     /// <summary> Reference to the piece within the cell. <c>null</c> if the cell is empty. </summary>
     public Piece occupant = null;
+
+    /// <summary> Hash table, keyed by colour, values are list of pieces that are able to capture this cell. </summary>
+    public Dictionary<TeamColour,List<Piece>> attackers;
+
+    /// <summary>
+    /// Clears existing attacker list, and searches through all piece in the game, adding them to attackers
+    /// if they have a valid move onto the cell.
+    /// </summary>
+    public void update_attackers()
+    {
+        // re-initialise attackers 
+        attackers = new Dictionary<TeamColour,List<Piece>>();
+        // i know it says initialisation can be simplified, but trust me the alternative is ugly and less simple.
+        attackers.Add(TeamColour.White, new List<Piece>());
+        attackers.Add(TeamColour.Black, new List<Piece>());
+
+        // get all pieces
+        var ojbects = GameObject.FindGameObjectsWithTag("Piece");
+        foreach (GameObject p in ojbects) {
+            Piece piece = p.GetComponent<Piece>();
+            // find moves the piece can make
+            List<Move> moves = piece.find_valid_moves();
+            // search moves for this cell
+            foreach (Move move in moves) {
+                if (move.cell == this) {
+                    attackers[piece.Colour].Add(piece);
+                    break;
+                }
+            }
+        }
+    }
 }

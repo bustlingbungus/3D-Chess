@@ -10,7 +10,7 @@ public class CellSelector : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        _board = GameObject.FindGameObjectWithTag("Main Board").GetComponent<Board>();
     }
 
     // Update is called once per frame
@@ -58,6 +58,8 @@ public class CellSelector : MonoBehaviour
     [SerializeField]
     private SelectorMover movement_controls;
 
+    private Board _board;
+
 
 
     [SerializeField]
@@ -90,5 +92,6 @@ public class CellSelector : MonoBehaviour
     [ContextMenu("Change Turn")]
     public void ChangeTurn() {
         current_player = current_player==TeamColour.White?TeamColour.Black:TeamColour.White;
+        _board.UpdateAttackers();
     }
 }

@@ -17,12 +17,12 @@ public class CameraMovement : MonoBehaviour
     {
         graph = new AdjacencyGraph<CameraNode>();
 
-        graph.AddVertex(new CameraNode(new Vector3(0,0,-25), new Vector3(0,0,0), 0));    // 0    front face
-        graph.AddVertex(new CameraNode(new Vector3(25,0,0), new Vector3(0,-90,0), 1));   // 1    right face
-        graph.AddVertex(new CameraNode(new Vector3(0,0,25), new Vector3(0,180,0), 2));   // 2    back face
-        graph.AddVertex(new CameraNode(new Vector3(-25,0,0), new Vector3(0,90,0), 3));   // 3    left face
-        graph.AddVertex(new CameraNode(new Vector3(0,25,0), new Vector3(90,0,0), 4));    // 4    top face
-        graph.AddVertex(new CameraNode(new Vector3(0,-25,0), new Vector3(-90,0,0), 5));  // 5    bottom face
+        graph.AddVertex(new CameraNode(new Vector3(0,0,-25),    0));    // 0    front face
+        graph.AddVertex(new CameraNode(new Vector3(25,0,0),     1));    // 1    right face
+        graph.AddVertex(new CameraNode(new Vector3(0,0,25),     2));    // 2    back face
+        graph.AddVertex(new CameraNode(new Vector3(-25,0,0),    3));    // 3    left face
+        graph.AddVertex(new CameraNode(new Vector3(0,25,0),     4));    // 4    top face
+        graph.AddVertex(new CameraNode(new Vector3(0,-25,0),    5));    // 5    bottom face
 
         // front face connections
         graph.AddEdge(0, 1, GraphDirection.Right);
@@ -57,7 +57,6 @@ public class CameraMovement : MonoBehaviour
 
         curr_node = graph.GetVertexAt(0);
         prev_pos = transform.position = curr_node.position;
-        prev_rot = transform.eulerAngles = curr_node.eulerAngles;
     }
 
     // Update is called once per frame
@@ -71,7 +70,7 @@ public class CameraMovement : MonoBehaviour
 
         float t = move_timer / travelTime;
         transform.position = interp(prev_pos, Node.position, t);
-        transform.eulerAngles = interp(prev_rot, Node.eulerAngles, t);
+        transform.LookAt(Vector3.zero);
         
         move_timer = Mathf.Clamp(move_timer+Time.deltaTime, 0f, travelTime);
     }
@@ -86,7 +85,6 @@ public class CameraMovement : MonoBehaviour
         set {
             if (value!=null) {
                 prev_pos = curr_node.position;
-                prev_rot = curr_node.eulerAngles;
                 move_timer = 0f;
                 curr_node = value;
             }
@@ -98,7 +96,7 @@ public class CameraMovement : MonoBehaviour
     }
 
 
-    private Vector3 prev_pos, prev_rot;
+    private Vector3 prev_pos;
 
     private float move_timer;
     [SerializeField]

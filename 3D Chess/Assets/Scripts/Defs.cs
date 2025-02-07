@@ -44,15 +44,13 @@ namespace Defs
 
 
     /// <summary>
-    /// Node in the camera node graph. Contains a position, rotation, and index of itself in the adjacency graph.
+    /// Node in the camera node graph. Contains a position,  and index of itself in the adjacency graph.
     /// </summary>
     public class CameraNode
     {
-        public CameraNode(Vector3 pos, Vector3 rot, int Idx) { position = pos; eulerAngles = rot; idx = Idx; }
+        public CameraNode(Vector3 pos, int Idx) { position = pos; idx = Idx; }
         /// <summary> Camera position. </summary>
         public Vector3 position;
-        /// <summary> Camera xyz rotation. </summary>
-        public Vector3 eulerAngles;
         /// <summary> Index of the node in graph. </summary>
         public int idx;
     }

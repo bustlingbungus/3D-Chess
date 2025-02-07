@@ -64,6 +64,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Pawn
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 7d450df739f59ed499833caddbd91d6b, type: 3}
+      propertyPath: m_TagString
+      value: Piece
+      objectReference: {fileID: 0}
     - target: {fileID: 1151388028547126963, guid: 7d450df739f59ed499833caddbd91d6b, type: 3}
       propertyPath: m_LocalScale.x
       value: 15
@@ -111,5 +115,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   validMoveHighlightPrefab: {fileID: 6146641205532658285, guid: 400c806e6cf12724d94a3d6eb7dba69d, type: 3}
   attackMoveHighlightPrefab: {fileID: 7794625528676183516, guid: d9dbb2d3480b889409f84d2893aabab1, type: 3}
-  board: {fileID: 0}
+  travelTime: 0.75
   colour: 0
+  _board: {fileID: 0}
