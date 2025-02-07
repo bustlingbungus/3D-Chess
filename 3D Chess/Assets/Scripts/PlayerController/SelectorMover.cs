@@ -1,3 +1,4 @@
+using System.Xml.Serialization;
 using UnityEngine;
 
 public class SelectorMover : MonoBehaviour
@@ -24,13 +25,33 @@ public class SelectorMover : MonoBehaviour
     {
         if (selector.Cell==null) selector.Cell = board.GetCellAt(0, 0, 0);
         else {
-            Vector3Int index = selector.Cell.index;
-            if (Input.GetKeyDown(positiveX)) selector.Cell = board.GetCellAt(++index.x, index.y, index.z);
-            if (Input.GetKeyDown(negativeX)) selector.Cell = board.GetCellAt(--index.x, index.y, index.z);
-            if (Input.GetKeyDown(positiveY)) selector.Cell = board.GetCellAt(index.x, ++index.y, index.z);
-            if (Input.GetKeyDown(negativeY)) selector.Cell = board.GetCellAt(index.x, --index.y, index.z);
-            if (Input.GetKeyDown(positiveZ)) selector.Cell = board.GetCellAt(index.x, index.y, ++index.z);
-            if (Input.GetKeyDown(negativeZ)) selector.Cell = board.GetCellAt(index.x, index.y, --index.z);
-        }   
+            Vector3 base_z = Camera.main.transform.forward, base_y=Vector3.zero, base_x=Vector3.zero;
+            Vector3.OrthoNormalize(ref base_z, ref base_y, ref base_x);
+
+
+            if (base_z.z==1f) { base_x*=-1f; base_y*=-1f; }
+            else if (base_z.x==-1f) { base_x*=-1f; base_y*=-1f; }
+            else if (base_z.y != 0f) {
+                Vector3 temp = base_x;
+                base_x = base_y;
+                base_y = temp;
+                if (base_z.y==-1) base_x *= -1;
+                else base_y *= -1;
+            }
+
+            Vector3 index = selector.Cell.index;
+
+            if (Input.GetKeyDown(negativeZ)) base_z *= -1f;
+            else if (!Input.GetKeyDown(positiveZ)) base_z = Vector3.zero;
+            if (Input.GetKeyDown(negativeX)) base_x *= -1f;
+            else if (!Input.GetKeyDown(positiveX)) base_x = Vector3.zero;
+            if (Input.GetKeyDown(negativeY)) base_y *= -1f;
+            else if (!Input.GetKeyDown(positiveY)) base_y = Vector3.zero;
+
+            index += base_z + base_y + base_x;
+            Vector3Int idx = new Vector3Int((int)index.x,(int)index.y,(int)index.z);
+
+            if (idx!=selector.Cell.index) selector.Cell = board.GetCellAt(idx);
+        }
     }
 }
