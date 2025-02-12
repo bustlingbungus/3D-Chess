@@ -13,7 +13,7 @@ Working repository for USF GameDev club's project for the 53rd annual USF eginee
 
 ### Programming:
 
-- Algorithm to detect checkmate/stalemate (a brute force algorithm that checks every possible move would probably be ok :sob:)
+- Algorithm to detect checkmate/stalemate (a brute force algorithm that checks every possible move would probably be ok haha)
 - Add special moves (pawn double first move, castling, and en passant)
 - Code to track player scores, and update UI (when UI is made lol)
 - Set up controls to work with a controller
