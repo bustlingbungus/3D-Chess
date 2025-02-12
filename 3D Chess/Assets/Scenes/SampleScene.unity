@@ -1558,8 +1558,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   select: 13
-  cancel: 27
-  move_select: {fileID: 90619256}
+  move_select: {fileID: 90619253}
   movement_controls: {fileID: 90619252}
   material: {fileID: 2100000, guid: 5088dec184728f842ad6b95c125f3a2b, type: 2}
 --- !u!114 &90619252
@@ -1581,7 +1580,7 @@ MonoBehaviour:
   negativeY: 274
   positiveZ: 119
   negativeZ: 115
---- !u!114 &90619256
+--- !u!114 &90619253
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1590,11 +1589,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 90619250}
   m_Enabled: 0
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 02bf5da684e7c474a88633921249090f, type: 3}
+  m_Script: {fileID: 11500000, guid: 86770479b876f994582222295ef9f614, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   nextSelection: 275
   previousSelection: 276
+  selectCell: 13
+  cancel: 27
+  selector: {fileID: 90619251}
 --- !u!1001 &92765164
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -25103,7 +25105,7 @@ PrefabInstance:
       addedObject: {fileID: 90619252}
     - targetCorrespondingSourceObject: {fileID: 6252870300312172816, guid: 249684512189892489ea08d83b2eddd5, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 90619256}
+      addedObject: {fileID: 90619253}
   m_SourcePrefab: {fileID: 100100000, guid: 249684512189892489ea08d83b2eddd5, type: 3}
 --- !u!1 &1735613271
 GameObject:

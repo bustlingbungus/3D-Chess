@@ -4,8 +4,7 @@ using Defs;
 public class CellSelector : MonoBehaviour
 {
     [SerializeField]
-    private KeyCode select = KeyCode.Return,
-                    cancel = KeyCode.Escape;
+    private KeyCode select = KeyCode.Return;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -16,23 +15,11 @@ public class CellSelector : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(select)) {
-            if (move_select.enabled) {
-                RaiseAlpha();
-                move_select.SelectCurrent();
-                move_select.enabled = false;
-                movement_controls.enabled = true;
-                ChangeTurn();
-            } else if (cell!=null && cell.occupant!=null && cell.occupant.Colour==current_player) {
-                LowerAlpha();
-                move_select.enabled = true;
-                move_select.GetMoves(cell.occupant);
-                movement_controls.enabled = false;
-            }
-        } else if (Input.GetKeyDown(cancel) && move_select.enabled) {
-            RaiseAlpha();
-            move_select.enabled = false;
-            movement_controls.enabled = true;
+        if (cell_select_input()) {
+            LowerAlpha();
+            move_select.enabled = true;
+            movement_controls.enabled = false;
+            move_select.GetMoves(cell.occupant);
         }
     }
 
@@ -54,7 +41,7 @@ public class CellSelector : MonoBehaviour
     private Cell cell;
 
     [SerializeField]
-    private MoveSelector move_select;
+    private PieceMover move_select;
     [SerializeField]
     private SelectorMover movement_controls;
 
@@ -91,7 +78,21 @@ public class CellSelector : MonoBehaviour
 
     [ContextMenu("Change Turn")]
     public void ChangeTurn() {
+        RaiseAlpha();
+        move_select.enabled = false;
+        movement_controls.enabled = true;
         current_player = current_player==TeamColour.White?TeamColour.Black:TeamColour.White;
         _board.UpdateAttackers();
+    }
+
+    public void ExitSelection() {
+        RaiseAlpha();
+        move_select.enabled = false;
+        movement_controls.enabled = true;
+    }
+
+    private bool cell_select_input() {
+        return Input.GetKeyDown(select) && !move_select.enabled && 
+               cell!=null && cell.occupant!=null && cell.occupant.Colour==current_player;
     }
 }
