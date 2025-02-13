@@ -10,15 +10,9 @@ public class King : Piece
         piece_init(PieceType.King);
     }
 
-    // Update is called once per frame
-    void Update()
+    public override List<Cell> find_valid_moves()
     {
-        piece_update();
-    }
-
-    public override List<Move> find_valid_moves()
-    {
-        List<Move> res = new List<Move>();
+        List<Cell> res = new List<Cell>();
         TeamColour opposite_colour = Colour==TeamColour.White?TeamColour.Black:TeamColour.White;
 
         // orthogonal movements
@@ -32,10 +26,10 @@ public class King : Piece
             Cell curr = _board.GetCellAt(Cell.index+disp);
             if (curr==null) continue;
             if (curr.occupant!=null) {
-                if (curr.occupant.Colour!=Colour) res.Add(new Move(curr, Move.MoveType.Attack));
+                if (curr.occupant.Colour!=Colour) res.Add(curr);
                 break;
             } else if (curr.attackers[opposite_colour].Count!=0) continue;
-            res.Add(new Move(curr, Move.MoveType.Regular));
+            res.Add(curr);
         }
 
         // diagonals
@@ -48,10 +42,10 @@ public class King : Piece
             Cell curr = _board.GetCellAt(Cell.index+disp);
             if (curr==null) continue;
             if (curr.occupant!=null) {
-                if (curr.occupant.Colour!=Colour) res.Add(new Move(curr, Move.MoveType.Attack));
+                if (curr.occupant.Colour!=Colour) res.Add(curr);
                 continue;
             } else if (curr.attackers[opposite_colour].Count!=0) continue;
-            res.Add(new Move(curr, Move.MoveType.Regular));
+            res.Add(curr);
         }
 
         // 2 dimensional diagonals
@@ -62,10 +56,10 @@ public class King : Piece
             Cell curr = _board.GetCellAt(Cell.index+disp);
             if (curr==null) continue;
             if (curr.occupant!=null) {
-                if (curr.occupant.Colour!=Colour) res.Add(new Move(curr, Move.MoveType.Attack));
+                if (curr.occupant.Colour!=Colour) res.Add(curr);
                 continue;
             } else if (curr.attackers[opposite_colour].Count!=0) continue;
-            res.Add(new Move(curr, Move.MoveType.Regular));
+            res.Add(curr);
         }
 
         return res;

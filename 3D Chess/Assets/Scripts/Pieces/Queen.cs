@@ -10,15 +10,9 @@ public class Queen : Piece
         piece_init(PieceType.Queen);
     }
 
-    // Update is called once per frame
-    void Update()
+    public override List<Cell> find_valid_moves()
     {
-        piece_update();
-    }
-
-    public override List<Move> find_valid_moves()
-    {
-        List<Move> res = new List<Move>();
+        List<Cell> res = new List<Cell>();
 
         bool index_in_bounds(Vector3Int idx) {
             return idx.x>=0 && idx.y>=0 && idx.z>=0 &&
@@ -40,10 +34,10 @@ public class Queen : Piece
                 Cell curr = _board.GetCellAt(index);
                 if (curr==null) continue;
                 if (curr.occupant!=null) {
-                    if (curr.occupant.Colour!=Colour) res.Add(new Move(curr, Move.MoveType.Attack));
+                    if (curr.occupant.Colour!=Colour) res.Add(curr);
                     break;
                 }
-                res.Add(new Move(curr, Move.MoveType.Regular));
+                res.Add(curr);
             }
         }
 
@@ -59,10 +53,10 @@ public class Queen : Piece
                 Cell curr = _board.GetCellAt(index);
                 if (curr==null) continue;
                 if (curr.occupant!=null) {
-                    if (curr.occupant.Colour!=Colour) res.Add(new Move(curr, Move.MoveType.Attack));
+                    if (curr.occupant.Colour!=Colour) res.Add(curr);
                     break;
                 }
-                res.Add(new Move(curr, Move.MoveType.Regular));
+                res.Add(curr);
             }
         }
         return res;

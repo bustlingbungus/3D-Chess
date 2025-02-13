@@ -82,7 +82,7 @@ public class CellSelector : MonoBehaviour
         move_select.enabled = false;
         movement_controls.enabled = true;
         current_player = current_player==TeamColour.White?TeamColour.Black:TeamColour.White;
-        _board.UpdateAttackers();
+        _board.RegenerateMoves();
     }
 
     public void ExitSelection() {

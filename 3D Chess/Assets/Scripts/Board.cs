@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor.Rendering.Universal;
 using UnityEngine;
+using Defs;
 
 /// <summary>
 /// Main storge for 3D array of cell objects.
@@ -19,6 +20,8 @@ public class Board : MonoBehaviour
 
     /// <summary> 3D array of cell objects. </summary>
     private Cell[,,] grid;
+
+    private bool regen_moves = true;
 
 
 
@@ -57,12 +60,17 @@ public class Board : MonoBehaviour
                 }
             }
         }
+
+        // RegenerateMoves();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (regen_moves) {
+            RegenerateMoves();
+            regen_moves = false;
+        }   
     }
 
     /// <summary>
@@ -99,11 +107,16 @@ public class Board : MonoBehaviour
         foreach (Cell cell in grid) cell.ToggleIndexDisplay();
     }
 
-    /// <summary>
-    /// Updates every cell's lists of attacking cells.
-    /// </summary>
-    [ContextMenu("Update Attackers")]
-    public void UpdateAttackers() {
-        foreach (Cell cell in grid) cell.update_attackers();
+    [ContextMenu("Regenerate Moves")]
+    public void RegenerateMoves() {
+        foreach (Cell cell in grid) {
+            cell.attackers = new Dictionary<TeamColour,List<Piece>>();
+            // i know it says initialisation can be simplified, but trust me the alternative is ugly and less simple.
+            cell.attackers.Add(TeamColour.White, new List<Piece>());
+            cell.attackers.Add(TeamColour.Black, new List<Piece>());
+        }
+        GameObject[] pieces = GameObject.FindGameObjectsWithTag("Piece");
+        foreach (GameObject p in pieces) p.GetComponent<Piece>().RegenerateMoves();
+
     }
 }

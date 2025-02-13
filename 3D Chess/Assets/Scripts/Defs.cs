@@ -41,6 +41,17 @@ namespace Defs
         public MoveType move_type;
     };
 
+    public struct MoveInfo
+    {
+        public MoveInfo (Cell dest, Piece src, GameObject Indicator) {
+            cell = dest; piece = src; indicator = Indicator;
+        }
+        public Cell cell;
+        public GameObject indicator;
+        public Piece piece;
+        public bool isAttack() { return cell.occupant != null; }
+    }
+
 
 
     /// <summary>

@@ -10,23 +10,17 @@ public class Knight : Piece
         piece_init(PieceType.Knight);
     }
 
-    // Update is called once per frame
-    void Update()
+    public override List<Cell> find_valid_moves()
     {
-        piece_update();
-    }
-
-    public override List<Move> find_valid_moves()
-    {
-        List<Move> res = new List<Move>();
+        List<Cell> res = new List<Cell>();
 
         // x +/-2 routes
         for (int i=0; i<8; i++) {
             Vector3Int disp = new Vector3Int(i<4?-2:2, i%2==0?i%4==0?-1:1:0, i%2==1?i%4==1?-1:1:0);
             Cell cell = _board.GetCellAt(Cell.index + disp);
             if (cell != null) {
-                if (cell.occupant==null) res.Add(new Move(cell, Move.MoveType.Regular));
-                else if (cell.occupant.Colour!=Colour) res.Add(new Move(cell, Move.MoveType.Attack));
+                if (cell.occupant==null) res.Add(cell);
+                else if (cell.occupant.Colour!=Colour) res.Add(cell);
             }
         }
         // y +/-2 routes
@@ -34,8 +28,8 @@ public class Knight : Piece
             Vector3Int disp = new Vector3Int(i%2==0?i%4==0?-1:1:0, i<4?-2:2, i%2==1?i%4==1?-1:1:0);
             Cell cell = _board.GetCellAt(Cell.index + disp);
             if (cell != null) {
-                if (cell.occupant==null) res.Add(new Move(cell, Move.MoveType.Regular));
-                else if (cell.occupant.Colour!=Colour) res.Add(new Move(cell, Move.MoveType.Attack));
+                if (cell.occupant==null) res.Add(cell);
+                else if (cell.occupant.Colour!=Colour) res.Add(cell);
             }
         }
         // z +/-2 routes
@@ -43,8 +37,8 @@ public class Knight : Piece
             Vector3Int disp = new Vector3Int(i%2==0?i%4==0?-1:1:0, i%2==1?i%4==1?-1:1:0, i<4?-2:2);
             Cell cell = _board.GetCellAt(Cell.index + disp);
             if (cell != null) {
-                if (cell.occupant==null) res.Add(new Move(cell, Move.MoveType.Regular));
-                else if (cell.occupant.Colour!=Colour) res.Add(new Move(cell, Move.MoveType.Attack));
+                if (cell.occupant==null) res.Add(cell);
+                else if (cell.occupant.Colour!=Colour) res.Add(cell);
             }
         }
 

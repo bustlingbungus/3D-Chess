@@ -95,7 +95,6 @@ public abstract class Piece : MonoBehaviour
 
 
 
-
     /* ==========  PROPERTIES  ========== */
     
     /// <summary> What kind of piece, e.g, pawn, queen, etc. </summary>
@@ -152,13 +151,26 @@ public abstract class Piece : MonoBehaviour
     /// <summary> The position of the cell previously occupied by the piece, used for interpolation between cells. </summary>
     private Vector3 init_pos = Vector3.zero;
 
+    public List<MoveInfo> available_moves;
 
+
+
+    void Update()
+    {
+        // ensure cell reference is valid
+        if (Cell==null) look_for_cell();
+
+        // interpolate betwen last position and new cell position
+        transform.position = pos_interp(init_pos, _cell.transform.position, movement_timer/travelTime);
+        // update interpolation timer
+        movement_timer = Mathf.Clamp(movement_timer+Time.deltaTime, 0f, travelTime);
+    }
 
 
 
     /* ==========  CONTEXT MENU  ========== */
-    
-    
+
+
     /// <summary>
     /// <para>Highlights cells that the piece can move to by instantiating valid/attack highlight prefabs in said cells. Detects cells to 
     /// highlight by calling the <c>find_valid_moves</c>, requiring an override of said function for this one to work.</para>
@@ -169,11 +181,7 @@ public abstract class Piece : MonoBehaviour
     /// </summary>
     [ContextMenu("Show Moves")]
     public void ShowMoves() {
-        List<Move> moves = find_valid_moves();
-        foreach (Move move in moves) {
-            if (move.move_type==Move.MoveType.Regular) Instantiate(validMoveHighlightPrefab, move.cell.transform.position, Quaternion.identity, transform);
-            else if (move.move_type == Move.MoveType.Attack) Instantiate(attackMoveHighlightPrefab, move.cell.transform.position, Quaternion.identity, transform);
-        }
+        foreach (MoveInfo move in available_moves) move.indicator.SetActive(true);
     }
 
     /// <summary>
@@ -182,9 +190,7 @@ public abstract class Piece : MonoBehaviour
     /// </summary>
     [ContextMenu("Hide Moves")]
     public void HideMoves() {
-        foreach (Transform child in transform) {
-            if (child.tag == "Cell Highlight") Destroy(child.gameObject);
-        }
+        foreach (MoveInfo move in available_moves) move.indicator.SetActive(false);
     }
 
 
@@ -193,6 +199,19 @@ public abstract class Piece : MonoBehaviour
 
     /* ==========  HELPER FUNCTIONS  ========== */
 
+    public void RegenerateMoves()
+    {
+        available_moves = new List<MoveInfo>();
+        List<Cell> cells = find_valid_moves();
+        foreach (Cell c in cells) {
+            GameObject prefab = c.occupant==null? validMoveHighlightPrefab : attackMoveHighlightPrefab;
+            GameObject indic = Instantiate(prefab, c.transform.position, Quaternion.identity, transform);
+            indic.SetActive(false);
+            available_moves.Add(new MoveInfo(c, this, indic));
+            c.attackers[Colour].Add(this);
+        }
+    }
+
     /// <summary>
     /// <para>Finds all moves the piece may currently make, by checking all cells the piece might be able to move to, and returning said
     /// cells if they are in bounds and not occupied or otherwise unable to be moved to.</para>
@@ -200,7 +219,7 @@ public abstract class Piece : MonoBehaviour
     /// <para><c>Piece.find_valid_moves</c> isn't defined; this function must be defined in sub-classes.</para>
     /// </summary>
     /// <returns> A <c>List&lt;Move&gt;</c> of the mvoes the piece can make. </returns>
-    public abstract List<Move> find_valid_moves();
+    public abstract List<Cell> find_valid_moves();
 
     /// <summary>
     /// <para>Initialises the piece's rotation based on colour, initialises piece type with given parameter. Finds the cell the piece was placed within, 
@@ -221,8 +240,6 @@ public abstract class Piece : MonoBehaviour
         _board = GameObject.FindGameObjectWithTag("Main Board").GetComponent<Board>();
         // find cell the piece was placed in
         look_for_cell();
-        // set timer so pieces aren't moveing on instantiation
-        movement_timer = travelTime;
     }
 
     /// <summary>
@@ -263,6 +280,10 @@ public abstract class Piece : MonoBehaviour
         }
         // update cell reference
         Cell = best_cell;
+
+        // set timer so pieces aren't moveing on instantiation
+        if (Cell!=null) transform.position = init_pos = _cell.transform.position;
+        movement_timer = travelTime;
     }
 
     /// <summary>
