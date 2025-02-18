@@ -16,18 +16,38 @@ public class Pawn : Piece
         Vector3Int index = Cell.index;
 
         // forwards movement
-        index.x += (Colour==TeamColour.White)? 1 : -1;
+        int dir = Colour==TeamColour.White? 1 : -1;
+        index.x += dir;
         Cell cell = _board.GetCellAt(index);
-        if (cell!=null && cell.occupant==null) res.Add(cell);
+        if (cell!=null && cell.occupant==null) {
+            res.Add(cell);
+            // double first move
+            if (move_cnt==0 && cell!=null) {
+                index.x += dir;
+                cell = _board.GetCellAt(index);
+                if (cell!=null && cell.occupant==null) res.Add(cell);
+                index.x -= dir;
+            }
+        }
 
         index = Cell.index;
         // vertical movement
-        index.y += (Colour==TeamColour.White)? -1 : 1;
+        index.y -= dir;
         cell = _board.GetCellAt(index);
-        if (cell!=null && cell.occupant==null) res.Add(cell);
+        if (cell!=null && cell.occupant==null) 
+        {
+            res.Add(cell);
+            // double first move
+            if (move_cnt==0 && cell!=null) {
+                index.y -= dir;
+                cell = _board.GetCellAt(index);
+                if (cell!=null && cell.occupant==null) res.Add(cell);
+                index.y += dir;
+            }
+        }
 
-        // diagonal attack 1
-        index.x += (Colour==TeamColour.White)? 1 : -1;
+        // diagonal attacks
+        index.x += dir;
         index.z += 1;
         cell = _board.GetCellAt(index);
         if (cell != null) {

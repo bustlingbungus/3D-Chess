@@ -128,6 +128,7 @@ public abstract class Piece : MonoBehaviour
                 _cell.occupant = this;
                 // reset timer for interpolation
                 movement_timer = 0f;
+                move_cnt++;
             }
         }
     }
@@ -152,6 +153,8 @@ public abstract class Piece : MonoBehaviour
     private Vector3 init_pos = Vector3.zero;
 
     public List<MoveInfo> available_moves;
+
+    public int move_cnt = -1;
 
 
 
