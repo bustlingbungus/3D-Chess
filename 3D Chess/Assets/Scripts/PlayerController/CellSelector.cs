@@ -83,6 +83,7 @@ public class CellSelector : MonoBehaviour
         movement_controls.enabled = true;
         current_player = current_player==TeamColour.White?TeamColour.Black:TeamColour.White;
         _board.RegenerateMoves();
+        LookForStalemate();
     }
 
     public void ExitSelection() {
@@ -94,5 +95,26 @@ public class CellSelector : MonoBehaviour
     private bool cell_select_input() {
         return Input.GetKeyDown(select) && !move_select.enabled && 
                cell!=null && cell.occupant!=null && cell.occupant.Colour==current_player;
+    }
+
+    [ContextMenu("Look for checkmate")]
+    void LookForStalemate()
+    {
+        GameObject[] pieces = GameObject.FindGameObjectsWithTag("Piece");
+        bool inCheck = false;
+        TeamColour opposite = current_player==TeamColour.White?TeamColour.Black:TeamColour.White;
+        foreach (GameObject obj in pieces) 
+        {
+            Piece piece = obj.GetComponent<Piece>();
+            if (piece.Colour == current_player)
+            {
+                if (piece.available_moves.Count > 0) {
+                    Debug.Log("Not Checkmate");
+                    return;
+                } else if (piece.Type==PieceType.King) inCheck = piece.Cell.attackers[opposite].Count > 0;
+            } 
+        }
+        if (inCheck) Debug.Log("Checkmate!");
+        else Debug.Log("Stalemate!");
     }
 }

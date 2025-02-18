@@ -116,7 +116,12 @@ public class Board : MonoBehaviour
             cell.attackers.Add(TeamColour.Black, new List<Piece>());
         }
         GameObject[] pieces = GameObject.FindGameObjectsWithTag("Piece");
-        foreach (GameObject p in pieces) p.GetComponent<Piece>().RegenerateMoves();
-
+        Stack<King> kings = new Stack<King>(); // kings will be handled after the other pieces, as this is necessary for how they avoid moving into check
+        foreach (GameObject o in pieces) {
+            Piece p = o.GetComponent<Piece>();
+            if (p.Type==PieceType.King) kings.Push(p as King);
+            p.RegenerateMoves();
+        }
+        while (kings.Count > 0) kings.Pop().RefineMoves();
     }
 }

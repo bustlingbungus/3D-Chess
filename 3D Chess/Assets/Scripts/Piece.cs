@@ -208,7 +208,6 @@ public abstract class Piece : MonoBehaviour
             GameObject indic = Instantiate(prefab, c.transform.position, Quaternion.identity, transform);
             indic.SetActive(false);
             available_moves.Add(new MoveInfo(c, this, indic));
-            c.attackers[Colour].Add(this);
         }
     }
 

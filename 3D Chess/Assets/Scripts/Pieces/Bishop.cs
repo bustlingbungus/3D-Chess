@@ -31,12 +31,14 @@ public class Bishop : Piece
             for (Vector3Int index = Cell.index+disp;index_in_bounds(index);index += disp)
             {
                 Cell curr = _board.GetCellAt(index);
-                if (curr==null) continue;
-                if (curr.occupant!=null) {
-                    if (curr.occupant.Colour!=Colour) res.Add(curr);
-                    break;
+                if (curr != null) {
+                    curr.attackers[Colour].Add(this);
+                    if (curr.occupant != null) {
+                        if (curr.occupant.Colour != Colour) res.Add(curr);
+                        break;
+                    }
+                    res.Add(curr);
                 }
-                res.Add(curr);
             }
         }
         return res;

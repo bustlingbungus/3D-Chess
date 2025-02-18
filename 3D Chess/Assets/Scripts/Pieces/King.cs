@@ -10,6 +10,16 @@ public class King : Piece
         piece_init(PieceType.King);
     }
 
+    public void RefineMoves()
+    {
+            TeamColour opposite = Colour==TeamColour.White?TeamColour.Black:TeamColour.White;
+            for (int i=0; i<available_moves.Count; i++) {
+                MoveInfo m = available_moves[i];
+                if (m.cell.attackers[opposite].Count>0) available_moves.RemoveAt(i--);
+            }
+    }
+
+
     public override List<Cell> find_valid_moves()
     {
         List<Cell> res = new List<Cell>();
@@ -24,12 +34,10 @@ public class King : Piece
 
             // check current displacement
             Cell curr = _board.GetCellAt(Cell.index+disp);
-            if (curr==null) continue;
-            if (curr.occupant!=null) {
-                if (curr.occupant.Colour!=Colour) res.Add(curr);
-                break;
-            } else if (curr.attackers[opposite_colour].Count!=0) continue;
-            res.Add(curr);
+            if (curr != null) {
+                curr.attackers[Colour].Add(this);
+                if (curr.occupant==null||curr.occupant.Colour!=Colour) res.Add(curr);
+            }
         }
 
         // diagonals
@@ -40,12 +48,10 @@ public class King : Piece
 
             // check current displacement
             Cell curr = _board.GetCellAt(Cell.index+disp);
-            if (curr==null) continue;
-            if (curr.occupant!=null) {
-                if (curr.occupant.Colour!=Colour) res.Add(curr);
-                continue;
-            } else if (curr.attackers[opposite_colour].Count!=0) continue;
-            res.Add(curr);
+            if (curr != null) {
+                curr.attackers[Colour].Add(this);
+                if (curr.occupant==null||curr.occupant.Colour!=Colour) res.Add(curr);
+            }
         }
 
         // 2 dimensional diagonals
@@ -54,12 +60,10 @@ public class King : Piece
             Vector3Int disp = new Vector3Int(i<8?i<4?-1:1:0,i<8?(i%2)==1?(i%4)==1?-1:1:0:i<10?-1:1,i<8?(i%2)==0?(i%4)==0?-1:1:0:(i%2)==0?-1:1);
             // check current displacement
             Cell curr = _board.GetCellAt(Cell.index+disp);
-            if (curr==null) continue;
-            if (curr.occupant!=null) {
-                if (curr.occupant.Colour!=Colour) res.Add(curr);
-                continue;
-            } else if (curr.attackers[opposite_colour].Count!=0) continue;
-            res.Add(curr);
+            if (curr != null) {
+                curr.attackers[Colour].Add(this);
+                if (curr.occupant==null||curr.occupant.Colour!=Colour) res.Add(curr);
+            }
         }
 
         return res;

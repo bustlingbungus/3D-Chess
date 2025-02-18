@@ -29,12 +29,18 @@ public class Pawn : Piece
         // diagonal attack 1
         index.x += (Colour==TeamColour.White)? 1 : -1;
         index.z += 1;
-        cell = _board.GetCellAt(index);        
-        if (cell!=null && cell.occupant!=null && cell.occupant.Colour!=Colour) res.Add(cell);
+        cell = _board.GetCellAt(index);
+        if (cell != null) {
+            cell.attackers[Colour].Add(this);
+            if (cell.occupant!=null && cell.occupant.Colour != Colour) res.Add(cell);
+        }
         
         index.z -= 2;
-        cell = _board.GetCellAt(index);        
-        if (cell!=null && cell.occupant!=null && cell.occupant.Colour!=Colour) res.Add(cell);
+        cell = _board.GetCellAt(index);
+        if (cell != null) {
+            cell.attackers[Colour].Add(this);
+            if (cell.occupant!=null && cell.occupant.Colour != Colour) res.Add(cell);
+        }
 
         return res;
     }
