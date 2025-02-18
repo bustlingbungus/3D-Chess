@@ -68,40 +68,79 @@ public class CameraMovement : MonoBehaviour
         graph.AddVertex(new CameraNode(new Vector3(25,0,0),     1));    // 1    right face
         graph.AddVertex(new CameraNode(new Vector3(0,0,25),     2));    // 2    back face
         graph.AddVertex(new CameraNode(new Vector3(-25,0,0),    3));    // 3    left face
-        graph.AddVertex(new CameraNode(new Vector3(0,25,0),     4));    // 4    top face
-        graph.AddVertex(new CameraNode(new Vector3(0,-25,0),    5));    // 5    bottom face
 
-        // add all vertex connections
+        graph.AddVertex(new CameraNode(new Vector3(0,25,-1),    4));    // 4    top, front down
+        graph.AddVertex(new CameraNode(new Vector3(1,25,0),     5));    // 5    top, right down
+        graph.AddVertex(new CameraNode(new Vector3(0,25,1),     6));    // 6    top, back down
+        graph.AddVertex(new CameraNode(new Vector3(-1,25,0),    7));    // 7    top, left down
+
+        graph.AddVertex(new CameraNode(new Vector3(0,-25,-1),   8));    // 8    bottom, front down
+        graph.AddVertex(new CameraNode(new Vector3(1,-25,0),    9));    // 9    bottom, right down
+        graph.AddVertex(new CameraNode(new Vector3(0,-25,1),    10));   // 10   bottom, back down
+        graph.AddVertex(new CameraNode(new Vector3(-1,-25,0),   11));   // 11   bottom, left down
+
         // front face connections
-        graph.AddEdge(0, 1, GraphDirection.Right);
-        graph.AddEdge(0, 3, GraphDirection.Left);
-        graph.AddEdge(0, 4, GraphDirection.Up);
-        graph.AddEdge(0, 5, GraphDirection.Down);
-        // right face connections
-        graph.AddEdge(1, 0, GraphDirection.Left);
-        graph.AddEdge(1, 2, GraphDirection.Right);
-        graph.AddEdge(1, 4, GraphDirection.Up);
-        graph.AddEdge(1, 5, GraphDirection.Down);
-        // back face connections
-        graph.AddEdge(2, 1, GraphDirection.Left);
-        graph.AddEdge(2, 3, GraphDirection.Right);
-        graph.AddEdge(2, 4, GraphDirection.Up);
-        graph.AddEdge(2, 5, GraphDirection.Down);
-        // left face connections
-        graph.AddEdge(3, 0, GraphDirection.Right);
-        graph.AddEdge(3, 2, GraphDirection.Left);
-        graph.AddEdge(3, 4, GraphDirection.Up);
-        graph.AddEdge(3, 5, GraphDirection.Down);
-        // top face connections
-        graph.AddEdge(4, 0, GraphDirection.Down);
-        graph.AddEdge(4, 1, GraphDirection.Right);
-        graph.AddEdge(4, 3, GraphDirection.Left);
-        graph.AddEdge(4, 2, GraphDirection.Up);
-        // bottom face connections
-        graph.AddEdge(5, 0, GraphDirection.Up);
-        graph.AddEdge(5, 1, GraphDirection.Right);
-        graph.AddEdge(5, 3, GraphDirection.Left);
-        graph.AddEdge(5, 2, GraphDirection.Down);
+        graph.AddEdge(0, 1, GraphDirection.Right);  // right faace
+        graph.AddEdge(0, 3, GraphDirection.Left);  // left face
+        graph.AddEdge(0, 4, GraphDirection.Up);  // top face (front down)
+        graph.AddEdge(0, 8, GraphDirection.Down);  // bottom face (front down)
+        // right face
+        graph.AddEdge(1, 0, GraphDirection.Left);  // front faace
+        graph.AddEdge(1, 2, GraphDirection.Right);  // back face
+        graph.AddEdge(1, 5, GraphDirection.Up);  // top face (right down)
+        graph.AddEdge(1, 9, GraphDirection.Down);  // bottom face (right down)
+        // back face
+        graph.AddEdge(2, 1, GraphDirection.Left);  // right faace
+        graph.AddEdge(2, 3, GraphDirection.Right);  // left face
+        graph.AddEdge(2, 6, GraphDirection.Up);  // top face (back down)
+        graph.AddEdge(2, 10, GraphDirection.Down);  // bottom face (back down)
+        // left face
+        graph.AddEdge(3, 0, GraphDirection.Right);  // front faace
+        graph.AddEdge(3, 2, GraphDirection.Left);  // back face
+        graph.AddEdge(3, 7, GraphDirection.Up);  // top face (left down)
+        graph.AddEdge(3, 11, GraphDirection.Down);  // bottom face (left down)
+
+        // top face (front down)
+        graph.AddEdge(4, 0, GraphDirection.Down);  // front face
+        graph.AddEdge(4, 5, GraphDirection.Right);  // top (right down)
+        graph.AddEdge(4, 7, GraphDirection.Left);  // top face (left down)
+        graph.AddEdge(4, 6, GraphDirection.Up);  // top face (back down)
+        // top face (right down)
+        graph.AddEdge(5, 1, GraphDirection.Down);  // right face
+        graph.AddEdge(5, 6, GraphDirection.Right);  // top (back down)
+        graph.AddEdge(5, 4, GraphDirection.Left);  // top face (front down)
+        graph.AddEdge(5, 7, GraphDirection.Up);  // top face (left down)
+        // top face (back down)
+        graph.AddEdge(6, 2, GraphDirection.Down);  // back face
+        graph.AddEdge(6, 7, GraphDirection.Right);  // top (left down)
+        graph.AddEdge(6, 5, GraphDirection.Left);  // top face (right down)
+        graph.AddEdge(6, 4, GraphDirection.Up);  // top face (front down)
+        // top face (left down)
+        graph.AddEdge(7, 3, GraphDirection.Down);  // left face
+        graph.AddEdge(7, 4, GraphDirection.Right);  // top (front down)
+        graph.AddEdge(7, 6, GraphDirection.Left);  // top face (back down)
+        graph.AddEdge(7, 5, GraphDirection.Up);  // top face (right down)
+        
+        // bottom face (front down)
+        graph.AddEdge(8, 0, GraphDirection.Down);  // front face
+        graph.AddEdge(8, 9, GraphDirection.Right);  // bottom (right down)
+        graph.AddEdge(8, 11, GraphDirection.Left);  // bottom face (left down)
+        graph.AddEdge(8, 10, GraphDirection.Up);  // bottom face (back down)
+        // bottom face (right down)
+        graph.AddEdge(9, 1, GraphDirection.Down);  // right face
+        graph.AddEdge(9, 10, GraphDirection.Right);  // bottom (back down)
+        graph.AddEdge(9, 8, GraphDirection.Left);  // bottom face (front down)
+        graph.AddEdge(9, 11, GraphDirection.Up);  // bottom face (left down)
+        // bottom face (back down)
+        graph.AddEdge(10, 2, GraphDirection.Down);  // back face
+        graph.AddEdge(10, 11, GraphDirection.Right);  // bottom (left down)
+        graph.AddEdge(10, 9, GraphDirection.Left);  // bottom face (right down)
+        graph.AddEdge(10, 8, GraphDirection.Up);  // bottom face (front down)
+        // bottom face (left down)
+        graph.AddEdge(11, 3, GraphDirection.Down);  // left face
+        graph.AddEdge(11, 8, GraphDirection.Right);  // bottom (front down)
+        graph.AddEdge(11, 10, GraphDirection.Left);  // bottom face (back down)
+        graph.AddEdge(11, 9, GraphDirection.Up);  // bottom face (right down)
 
         // initilaise camera position
         curr_node = graph.GetVertexAt(0);
