@@ -93,7 +93,7 @@ public abstract class Piece : MonoBehaviour
     private TeamColour colour = TeamColour.White;
 
 
-
+    // cool comment
 
     /* ==========  PROPERTIES  ========== */
     
