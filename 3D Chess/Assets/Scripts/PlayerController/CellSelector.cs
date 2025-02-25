@@ -15,7 +15,8 @@ public class CellSelector : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (cell_select_input()) {
+        if (cell_select_input())
+        {
             LowerAlpha();
             move_select.enabled = true;
             movement_controls.enabled = false;
@@ -26,12 +27,14 @@ public class CellSelector : MonoBehaviour
     public Cell Cell
     {
         get => cell;
-        set {
-            if (value!=null) {
-                if (cell!=null && cell.occupant!=null) cell.occupant.HideMoves();
+        set
+        {
+            if (value != null)
+            {
+                if (cell != null && cell.occupant != null) cell.occupant.HideMoves();
                 cell = value;
                 transform.position = cell.transform.position;
-                if (cell.occupant!=null && cell.occupant.Colour==current_player) cell.occupant.ShowMoves();
+                if (cell.occupant != null && cell.occupant.Colour == current_player) cell.occupant.ShowMoves();
             }
         }
     }
@@ -63,9 +66,12 @@ public class CellSelector : MonoBehaviour
         Color newCol = material.color;
         newCol.a = newAlpha;
         material.color = newCol;
-        if (cell.occupant!=null) {
-            foreach (Transform child in cell.occupant.transform) {
-                if (child.tag == "Cell Highlight") {
+        if (cell.occupant != null)
+        {
+            foreach (Transform child in cell.occupant.transform)
+            {
+                if (child.tag == "Cell Highlight")
+                {
                     Material mat = child.GetComponent<MeshRenderer>().material;
                     newCol = mat.color;
                     newCol.a = newAlpha;
@@ -77,24 +83,28 @@ public class CellSelector : MonoBehaviour
 
 
     [ContextMenu("Change Turn")]
-    public void ChangeTurn() {
+    public void ChangeTurn()
+    {
         RaiseAlpha();
         move_select.enabled = false;
         movement_controls.enabled = true;
-        current_player = current_player==TeamColour.White?TeamColour.Black:TeamColour.White;
+        current_player = current_player == TeamColour.White ? TeamColour.Black : TeamColour.White;
         _board.RegenerateMoves();
         LookForStalemate();
     }
 
-    public void ExitSelection() {
+    public void ExitSelection()
+    {
         RaiseAlpha();
         move_select.enabled = false;
         movement_controls.enabled = true;
     }
 
-    private bool cell_select_input() {
-        return Input.GetKeyDown(select) && !move_select.enabled && 
-               cell!=null && cell.occupant!=null && cell.occupant.Colour==current_player;
+    private bool cell_select_input()
+    {
+        return Input.GetKeyDown(select) && !move_select.enabled &&
+               cell != null && cell.occupant != null && cell.occupant.Colour == current_player &&
+               !IsDiscoveredCheck(cell);
     }
 
     [ContextMenu("Look for checkmate")]
@@ -102,19 +112,61 @@ public class CellSelector : MonoBehaviour
     {
         GameObject[] pieces = GameObject.FindGameObjectsWithTag("Piece");
         bool inCheck = false;
-        TeamColour opposite = current_player==TeamColour.White?TeamColour.Black:TeamColour.White;
-        foreach (GameObject obj in pieces) 
+        TeamColour opposite = current_player == TeamColour.White ? TeamColour.Black : TeamColour.White;
+        foreach (GameObject obj in pieces)
         {
             Piece piece = obj.GetComponent<Piece>();
             if (piece.Colour == current_player)
             {
-                if (piece.available_moves.Count > 0) {
+                if (piece.available_moves.Count > 0)
+                {
                     Debug.Log("Not Checkmate");
                     return;
-                } else if (piece.Type==PieceType.King) inCheck = piece.Cell.attackers[opposite].Count > 0;
-            } 
+                }
+                else if (piece.Type == PieceType.King)
+                {
+                    inCheck = piece.Cell.attackers[opposite].Count > 0;
+                }
+            }
         }
         if (inCheck) Debug.Log("Checkmate!");
         else Debug.Log("Stalemate!");
+    }
+    private bool checkForInCheck()
+    {
+        GameObject[] pieces = GameObject.FindGameObjectsWithTag("Piece");
+        TeamColour opposite = current_player == TeamColour.White ? TeamColour.Black : TeamColour.White;
+        foreach (GameObject obj in pieces)
+        {
+            Piece piece = obj.GetComponent<Piece>();
+            if (piece.Colour == opposite)
+            {
+                foreach (MoveInfo move in piece.available_moves)
+                {
+                    if (move.cell.occupant != null && move.cell.occupant.Type == PieceType.King)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private bool IsDiscoveredCheck(Cell targetCell)
+    {
+        // Temporarily move the piece to the target cell
+        Piece originalPiece = cell.occupant;
+        Piece targetPiece = targetCell.occupant;
+        targetCell.occupant = originalPiece;
+        cell.occupant = null;
+
+        bool inCheck = checkForInCheck();
+
+        // Revert the move
+        cell.occupant = originalPiece;
+        targetCell.occupant = targetPiece;
+
+        return inCheck;
     }
 }
