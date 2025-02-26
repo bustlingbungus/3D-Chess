@@ -11,12 +11,12 @@ public class SelectorMover : MonoBehaviour
 
     /// <summary> Keybindings for movement directions. </summary>
     [SerializeField]
-    private KeyCode positiveX = KeyCode.W,
-                    negativeX = KeyCode.S,
-                    positiveY = KeyCode.UpArrow,
-                    negativeY = KeyCode.DownArrow,
-                    positiveZ = KeyCode.A,
-                    negativeZ = KeyCode.D;
+    private KeyCode forward = KeyCode.W,
+                    backward = KeyCode.S,
+                    up = KeyCode.UpArrow,
+                    down = KeyCode.DownArrow,
+                    left = KeyCode.A,
+                    right = KeyCode.D;
     
     /// <summary> Reference to the main board object. </summary>
     private Board board;
@@ -34,38 +34,48 @@ public class SelectorMover : MonoBehaviour
         // default selector cell to 0, 0, 0
         if (selector.Cell==null) selector.Cell = board.GetCellAt(0, 0, 0);
         else {
-            // get basis vectors such that one basis is the camera's facing direction
-            Vector3 base_z = Camera.main.transform.forward, base_y=Vector3.zero, base_x=Vector3.zero;
-            Vector3.OrthoNormalize(ref base_z, ref base_y, ref base_x);
 
-            // correct the x and y basis vectors to be more intuitive at weird angles
-            if (base_z.z!=0f) { 
-                base_x*=-1f; 
-                base_y*=-1f; 
-            } else if (base_z.y != 0f) {
-                Vector3 temp = base_x;
-                base_x = base_y;
-                base_y = temp;
-                if (base_z.y==-1) base_x *= -1;
-                else base_y *= -1;
-            }
-
-            Vector3 index = selector.Cell.index;
+            // get basis vectors based on the camera's facing direction
+            Vector3 fb = Camera.main.transform.forward,
+                    lr = Camera.main.transform.right * -1f,
+                    ud = Camera.main.transform.up;
 
             // check for input, and edit the magnitude/direction of the basis vectors before adding them to the index
-            if (Input.GetKeyDown(negativeZ)) base_z *= -1f;
-            else if (!Input.GetKeyDown(positiveZ)) base_z = Vector3.zero;
-            if (Input.GetKeyDown(negativeX)) base_x *= -1f;
-            else if (!Input.GetKeyDown(positiveX)) base_x = Vector3.zero;
-            if (Input.GetKeyDown(negativeY)) base_y *= -1f;
-            else if (!Input.GetKeyDown(positiveY)) base_y = Vector3.zero;
+            if (Input.GetKeyDown(backward)) fb *= -1f;
+            else if (!Input.GetKeyDown(forward)) fb = Vector3.zero;
+            if (Input.GetKeyDown(right)) lr *= -1f;
+            else if (!Input.GetKeyDown(left)) lr = Vector3.zero;
+            if (Input.GetKeyDown(down)) ud *= -1f;
+            else if (!Input.GetKeyDown(up)) ud = Vector3.zero;
+
+            // make each of the axes have one nonzero member
+            correctValues(ref fb);
+            correctValues(ref lr);
+            correctValues(ref ud);
 
             // add modified basis vectors to the cell index, and convert to integer indices
-            index += base_z + base_y + base_x;
+            Vector3 index = selector.Cell.index + fb + lr + ud;
             Vector3Int idx = new Vector3Int((int)index.x,(int)index.y,(int)index.z);
 
             // if a new index was selected, update selector position
             if (idx!=selector.Cell.index) selector.Cell = board.GetCellAt(idx);
         }
+    }
+
+    /// <summary> 
+    /// Modifies a vector to only have one nonzero element: the element with the greatest magnitude in the unmodified vector.
+    /// Makes the nonzero element have a magnitude of 1, with the same sign as said element in the unmodified vector.
+    /// </summary>
+    /// <param name="vec">The vector to modify.</param>
+    private void correctValues(ref Vector3 vec)
+    {
+        // x is greatest
+        if (Mathf.Abs(vec.x)>Mathf.Abs(vec.y) && Mathf.Abs(vec.x)>Mathf.Abs(vec.z)) {
+            vec = new Vector3(Mathf.Sign(vec.x), 0f, 0f);
+        // y is greatest
+        } else if (Mathf.Abs(vec.y)>Mathf.Abs(vec.x) && Mathf.Abs(vec.y)>Mathf.Abs(vec.z)) {
+            vec = new Vector3(0f, Mathf.Sign(vec.y), 0f);
+        // z is greatest, or vector is 0
+        } else vec = vec==Vector3.zero? Vector3.zero : new Vector3(0f, 0f, Mathf.Sign(vec.z));
     }
 }
