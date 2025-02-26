@@ -1422,6 +1422,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   select: 13
+  whiteTurn: {r: 0.4811321, g: 0.43239772, b: 0.36538804, a: 0}
+  blackTurn: {r: 0.16981131, g: 0.12881029, b: 0.0969206, a: 0}
+  turnChangeTime: 0.5
+  cam: {fileID: 330585545}
   move_select: {fileID: 90619253}
   movement_controls: {fileID: 90619252}
   material: {fileID: 2100000, guid: 5088dec184728f842ad6b95c125f3a2b, type: 2}
@@ -1438,12 +1442,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   selector: {fileID: 90619251}
-  positiveX: 97
-  negativeX: 100
-  positiveY: 273
-  negativeY: 274
-  positiveZ: 119
-  negativeZ: 115
+  forward: 119
+  backward: 115
+  up: 273
+  down: 274
+  left: 97
+  right: 100
 --- !u!114 &90619253
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4744,8 +4748,8 @@ Camera:
   m_GameObject: {fileID: 330585543}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0.6415094, g: 0, b: 0.12594055, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0

@@ -6,10 +6,25 @@ public class CellSelector : MonoBehaviour
     [SerializeField]
     private KeyCode select = KeyCode.Return;
 
+    [SerializeField]
+    private Color whiteTurn, blackTurn;
+    private Color col_a, col_b;
+    [SerializeField]
+    private float turnChangeTime = 1.0f;
+    private float turn_timer;
+    [SerializeField]
+    private Camera cam;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         _board = GameObject.FindGameObjectWithTag("Main Board").GetComponent<Board>();
+    
+        col_a = blackTurn;
+        col_b = whiteTurn;
+        turn_timer = turnChangeTime;
+
+        cam.backgroundColor = whiteTurn;
     }
 
     // Update is called once per frame
@@ -22,6 +37,9 @@ public class CellSelector : MonoBehaviour
             movement_controls.enabled = false;
             move_select.GetMoves(cell.occupant);
         }
+
+        cam.backgroundColor = colour_lerp(col_a, col_b, turn_timer / turnChangeTime);
+        turn_timer = Mathf.Clamp(turn_timer+Time.deltaTime, 0f, turnChangeTime);
     }
 
     public Cell Cell
@@ -91,6 +109,12 @@ public class CellSelector : MonoBehaviour
         current_player = current_player == TeamColour.White ? TeamColour.Black : TeamColour.White;
         _board.RegenerateMoves(true);
         LookForStalemate();
+
+        // begin interpolating between background colours
+        Color temp = col_a;
+        col_a = col_b;
+        col_b = temp;
+        turn_timer = 0f;
     }
 
     public void ExitSelection()
@@ -104,6 +128,10 @@ public class CellSelector : MonoBehaviour
     {
         return Input.GetKeyDown(select) && !move_select.enabled &&
                cell != null && cell.occupant != null && cell.occupant.Colour == current_player;
+    }
+
+    private Color colour_lerp(Color a, Color b, float t) {
+        return a + t * (b - a);
     }
 
     [ContextMenu("Look for checkmate")]

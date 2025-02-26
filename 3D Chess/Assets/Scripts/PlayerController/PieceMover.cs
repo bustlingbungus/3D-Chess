@@ -28,12 +28,18 @@ public class PieceMover : MonoBehaviour
 
     public void SelectCurrent()
     {
-        if (curr_idx<curr_piece.available_moves.Count) {
+        if (curr_idx<curr_piece.available_moves.Count) 
+        {
+            // get the current move
             MoveInfo v = curr_piece.available_moves[curr_idx];
+            // hide the move indicators
             curr_piece.HideMoves();
+            // move the piece to the selected cell
             curr_piece.TravelTo(v.cell);
+            // change turns
             selector.ChangeTurn();
-        } else selector.ExitSelection();
+        } 
+        else selector.ExitSelection();
     }
 
     // cell highlights are added to the pieces in the same order as their moves, so this can be exploited
