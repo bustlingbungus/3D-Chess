@@ -58,25 +58,26 @@ public class King : Piece
                 if (curr.occupant == null || curr.occupant.Colour != Colour) res.Add(curr);
             }
         }
-        if (move_cnt == 0)
-        {
-            // castling
-            for (int i = 0; i < 2; i++)
-            {
-                Vector3Int disp = new Vector3Int(i == 0 ? 2 : -2, 0, 0);
-                Cell curr = _board.GetCellAt(Cell.index + disp);
-                if (curr != null && curr.occupant == null)
-                {
-                    bool can_castle = true;
-                    for (int j = 0; j < 3; j++)
-                    {
-                        Cell check = _board.GetCellAt(Cell.index + new Vector3Int(i == 0 ? 1 : -1, 0, 0) * j);
-                        if (check != null && check.attackers[opposite_colour].Count > 0) can_castle = false;
-                    }
-                    if (can_castle) res.Add(curr);
-                }
-            }
-        }
+        
+        // if (move_cnt == 0)
+        // {
+        //     // castling
+        //     for (int i = 0; i < 2; i++)
+        //     {
+        //         Vector3Int disp = new Vector3Int(i == 0 ? 2 : -2, 0, 0);
+        //         Cell curr = _board.GetCellAt(Cell.index + disp);
+        //         if (curr != null && curr.occupant == null)
+        //         {
+        //             bool can_castle = true;
+        //             for (int j = 0; j < 3; j++)
+        //             {
+        //                 Cell check = _board.GetCellAt(Cell.index + new Vector3Int(i == 0 ? 1 : -1, 0, 0) * j);
+        //                 if (check != null && check.attackers[opposite_colour].Count > 0) can_castle = false;
+        //             }
+        //             if (can_castle) res.Add(curr);
+        //         }
+        //     }
+        // }
 
         return res;
     }
