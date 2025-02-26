@@ -117,18 +117,11 @@ public abstract class Piece : MonoBehaviour
         set {
             if (value != null) {
                 // remove self from current cell, set init pos for interpolation
-                if (_cell!=null) {
-                    _cell.occupant = null;
-                    init_pos = _cell.transform.position;
-                }
+                if (_cell!=null) _cell.occupant = null;
                 // assign _cell
                 _cell = value;
-                // if the cell is occupied, destroy the occupant. Make self the new occupant
-                // if (_cell.occupant!=null) Destroy(_cell.occupant.gameObject);
+                // make self the new cell occupant
                 _cell.occupant = this;
-                // reset timer for interpolation
-                movement_timer = 0f;
-                move_cnt++;
             }
         }
     }
@@ -358,5 +351,17 @@ public abstract class Piece : MonoBehaviour
     private Vector3 pos_interp(Vector3 a, Vector3 b, float t) {
         t = 0.5f*(Mathf.Sin(Mathf.PI*(t-0.5f))+1f);
         return a + t*(b - a);
+    }
+
+    public void TravelTo(Cell dest)
+    {
+        // clear any pieace in the destination cell
+        if (dest.occupant != null) Destroy(dest.occupant.gameObject);
+        // reset timer for interpolation
+        movement_timer = 0f;
+        move_cnt++;
+        if (Cell != null) init_pos = Cell.transform.position;
+        // update cell reference
+        Cell = dest;
     }
 }
