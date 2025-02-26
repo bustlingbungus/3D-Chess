@@ -56,7 +56,7 @@ public class PieceMover : MonoBehaviour
     private void select_move(int next_idx)
     {
         if (curr_idx>=0 && curr_idx<curr_piece.available_moves.Count)
-            set_material_alpha(0.15f,curr_piece.available_moves[curr_idx].indicator);
+            set_material_alpha(0.05f,curr_piece.available_moves[curr_idx].indicator);
 
         if (next_idx<0) curr_idx=curr_piece.available_moves.Count-1;
         else if (next_idx>=curr_piece.available_moves.Count) curr_idx = 0;

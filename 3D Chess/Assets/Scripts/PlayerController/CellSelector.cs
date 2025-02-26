@@ -75,7 +75,7 @@ public class CellSelector : MonoBehaviour
 
 
     [ContextMenu("Lower Alpha")]
-    public void LowerAlpha() { SetHighlightAlpha(0.15f); }
+    public void LowerAlpha() { SetHighlightAlpha(0.05f); }
     [ContextMenu("Raise Alpha")]
     public void RaiseAlpha() { SetHighlightAlpha(0.588f); }
 
