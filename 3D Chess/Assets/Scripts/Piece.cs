@@ -124,7 +124,7 @@ public abstract class Piece : MonoBehaviour
                 // assign _cell
                 _cell = value;
                 // if the cell is occupied, destroy the occupant. Make self the new occupant
-                if (_cell.occupant!=null) Destroy(_cell.occupant.gameObject);
+                // if (_cell.occupant!=null) Destroy(_cell.occupant.gameObject);
                 _cell.occupant = this;
                 // reset timer for interpolation
                 movement_timer = 0f;
@@ -152,8 +152,13 @@ public abstract class Piece : MonoBehaviour
     /// <summary> The position of the cell previously occupied by the piece, used for interpolation between cells. </summary>
     private Vector3 init_pos = Vector3.zero;
 
+    /// <summary> The moves the piece is legally able to make. </summary>
+    [HideInInspector]
     public List<MoveInfo> available_moves;
+    /// <summary> Indices in <c>available_moves</c> of moves that would result in check, for temporary use in move detection. </summary>
+    private Stack<int> prune_moves;
 
+    /// <summary> The number of moves this piece has made. </summary>
     public int move_cnt = -1;
 
 
@@ -184,7 +189,10 @@ public abstract class Piece : MonoBehaviour
     /// </summary>
     [ContextMenu("Show Moves")]
     public void ShowMoves() {
-        foreach (MoveInfo move in available_moves) move.indicator.SetActive(true);
+        foreach (MoveInfo move in available_moves) {
+            if (move.indicator==null) Debug.Log("it's null here");
+            move.indicator.SetActive(true);
+        }
     }
 
     /// <summary>
@@ -202,15 +210,65 @@ public abstract class Piece : MonoBehaviour
 
     /* ==========  HELPER FUNCTIONS  ========== */
 
+    /// <summary>
+    /// <para>Finds all the cells the piece could possibly move to, by calling the <c>find_valid_moves</c>. 
+    /// Does not add a move indicator for the moves. Includes moves that would result in check.</para>
+    /// </summary>
     public void RegenerateMoves()
     {
         available_moves = new List<MoveInfo>();
+        // get list of cells the piece can reach
         List<Cell> cells = find_valid_moves();
+        // make each cell into a MoveInfo
         foreach (Cell c in cells) {
-            GameObject prefab = c.occupant==null? validMoveHighlightPrefab : attackMoveHighlightPrefab;
-            GameObject indic = Instantiate(prefab, c.transform.position, Quaternion.identity, transform);
-            indic.SetActive(false);
-            available_moves.Add(new MoveInfo(c, this, indic));
+            available_moves.Add(new MoveInfo(c, this));
+        }
+    }
+
+    /// <summary>
+    /// <para>Check for moves that would result in check, and add them to stack to be removed from available moves.
+    /// Calls the board's <c>willCauseCheck</c> for each of its potential moves, and schedules the move for removal if it will result
+    /// in check for the piece's own colour.</para>
+    /// 
+    /// <para>Moves cannot be removed within this function, because <c>willCauseCheck</c> will temporarily regenerate piece moves, ignorant
+    /// of check, meaning removals here may be undone by other pieces calling this function. Moves resulting in check will be 
+    /// removed for all pieces in the <c>AddIndicators</c> function.</para>
+    /// 
+    /// <see cref="AddIndicators"/>
+    /// </summary>
+    public void PruneDiscovered()
+    {
+        prune_moves = new Stack<int>();
+        for (int i=0; i<available_moves.Count; i++)
+        {
+            // for each move, check if it will cause check
+            MoveInfo move = available_moves[i];
+            // if the move causes check, schedule it for removal
+            if (_board.willCauseCheck(move.cell, Cell, Colour)) prune_moves.Push(i);
+        }
+    }
+
+    /// <summary>
+    /// <para>Clears out any moves that will cause check for this piece's colour, by removing all the moves scheduled 
+    /// in <c>prune_moves</c> from <c>available_moves</c>.</para>
+    /// 
+    /// <para>Instantiates a move indicator as a child of the piece, located at the cell associated with each respective move.</para>
+    /// </summary>
+    public void AddIndicators()
+    {
+        // for each index in the stack remove it from available_moves
+        while (prune_moves.Count > 0) available_moves.RemoveAt(prune_moves.Pop());
+
+        // for each remaining move, instantiate an indicator prefab
+        for (int i=0; i<available_moves.Count; i++)
+        {
+            MoveInfo move = available_moves[i];
+            // chose which prefab depending on if the move will result in a capture
+            GameObject prefab = move.cell.occupant==null? validMoveHighlightPrefab : attackMoveHighlightPrefab;
+            move.indicator = Instantiate(prefab, move.cell.transform.position, Quaternion.identity, transform);
+            // disable the indicator initially
+            move.indicator.SetActive(false);
+            available_moves[i] = move;
         }
     }
 

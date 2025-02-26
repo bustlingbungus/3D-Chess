@@ -30,8 +30,9 @@ public class PieceMover : MonoBehaviour
     {
         if (curr_idx<curr_piece.available_moves.Count) {
             MoveInfo v = curr_piece.available_moves[curr_idx];
-            curr_piece.Cell = v.cell;
             curr_piece.HideMoves();
+            if (v.cell.occupant!=null) Destroy(v.cell.occupant.gameObject);
+            curr_piece.Cell = v.cell;
             selector.ChangeTurn();
         } else selector.ExitSelection();
     }

@@ -43,7 +43,7 @@ namespace Defs
 
     public struct MoveInfo
     {
-        public MoveInfo (Cell dest, Piece src, GameObject Indicator) {
+        public MoveInfo (Cell dest, Piece src, GameObject Indicator = null) {
             cell = dest; piece = src; indicator = Indicator;
         }
         public Cell cell;

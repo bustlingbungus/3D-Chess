@@ -10,18 +10,6 @@ public class King : Piece
         piece_init(PieceType.King);
     }
 
-    public void RefineMoves()
-    {
-        TeamColour opposite = Colour == TeamColour.White ? TeamColour.Black : TeamColour.White;
-        for (int i = 0; i < available_moves.Count; i++)
-        {
-            MoveInfo m = available_moves[i];
-            if (m.cell.attackers[opposite].Count > 0) available_moves.RemoveAt(i--);
-        }
-    }
-
-
-
     public override List<Cell> find_valid_moves()
     {
         List<Cell> res = new List<Cell>();

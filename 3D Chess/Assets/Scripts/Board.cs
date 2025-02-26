@@ -20,7 +20,7 @@ public class Board : MonoBehaviour
 
     /// <summary> 3D array of cell objects. </summary>
     private Cell[,,] grid;
-
+    /// <summary> Flag for when piece moves should be regenerated. </summary>
     private bool regen_moves = true;
 
 
@@ -60,8 +60,6 @@ public class Board : MonoBehaviour
                 }
             }
         }
-
-        // RegenerateMoves();
     }
 
     // Update is called once per frame
@@ -69,7 +67,7 @@ public class Board : MonoBehaviour
     {
         if (regen_moves)
         {
-            RegenerateMoves();
+            RegenerateMoves(true);
             regen_moves = false;
         }
     }
@@ -110,9 +108,16 @@ public class Board : MonoBehaviour
         foreach (Cell cell in grid) cell.ToggleIndexDisplay();
     }
 
-    [ContextMenu("Regenerate Moves")]
-    public void RegenerateMoves()
+    /// <summary>
+    /// <para>Regenerates the moves each piece is able to make. Also regenerates the pieces that can attack each cell.</para>
+    /// 
+    /// <para>If <c>checkDiscovered</c> is false, this will not check for potential checks caused by each piece's moves.</para>
+    /// </summary>
+    /// <param name="checkDiscovered">Indicate if pieces should check if their moves cause check by setting this to <c>true</c>.
+    ///                               This will also instantiate move indicators for each piece's available moves.</param>
+    public void RegenerateMoves(bool checkDiscovered)
     {
+        // reset each cell's attackers
         foreach (Cell cell in grid)
         {
             cell.attackers = new Dictionary<TeamColour, List<Piece>>();
@@ -120,15 +125,94 @@ public class Board : MonoBehaviour
             cell.attackers.Add(TeamColour.White, new List<Piece>());
             cell.attackers.Add(TeamColour.Black, new List<Piece>());
         }
-        GameObject[] pieces = GameObject.FindGameObjectsWithTag("Piece");
-        Stack<King> kings = new Stack<King>(); // kings will be handled after the other pieces, as this is necessary for how they avoid moving into check
-        foreach (GameObject o in pieces)
+
+        // get a list of pieces as Piece objects
+        GameObject[] objs = GameObject.FindGameObjectsWithTag("Piece");
+        List<Piece> pieces = new List<Piece>();
+        foreach (GameObject obj in objs) pieces.Add(obj.GetComponent<Piece>());
+
+        // regenerate the moves for each piece
+        foreach (Piece p in pieces) p.RegenerateMoves();
+
+        if (checkDiscovered) 
         {
-            Piece p = o.GetComponent<Piece>();
-            if (p.Type == PieceType.King) kings.Push(p as King);
-            p.RegenerateMoves();
+            // prune any moves that would cause check for the pieces' colour
+            foreach (Piece p in pieces) p.PruneDiscovered();
+            // add indicators for all moves. This DOES need to in a seperate loop because it needs to be called
+            // AFTER all pieces have pruned their check-causing moves. 
+            foreach (Piece p in pieces) p.AddIndicators();
         }
-        while (kings.Count > 0) kings.Pop().RefineMoves();
     }
 
+    /// <summary>
+    /// Checks if the given piece colour's king is currently in check in the given board position. Does this by locating
+    /// the king, and chekcing if the cell it inhabits has any attackers of the opposite colour.
+    /// </summary>
+    /// <param name="player">The piece colour to query.</param>
+    /// <returns><c>true</c> if the specified player is in check.</returns>
+    private bool checkForInCheck(TeamColour player)
+    {
+        // get array of all pieces
+        GameObject[] pieces = GameObject.FindGameObjectsWithTag("Piece");
+        TeamColour opposite = player == TeamColour.White ? TeamColour.Black : TeamColour.White;
+
+        foreach (GameObject obj in pieces)
+        {
+            Piece piece = obj.GetComponent<Piece>();
+            // player king detected
+            if (piece.Colour == player && piece.Type == PieceType.King)
+            {
+                // return whether the king is in check
+                return piece.Cell.attackers[opposite].Count > 0;
+            }
+        }
+        // no king found
+        return false;
+    }
+
+    /// <summary>
+    /// <para>Determines if a potential move will cause check by temporarily making the move, seeing if the king is in check, then reverting the move.</para>
+    /// 
+    /// <para>Calls <c>RegenerateMoves</c> with <c>checkDiscovered = false</c> to prevent infinite recursion.</para>
+    /// </summary>
+    /// <param name="targetCell">The cell to move a piece to.</param>
+    /// <param name="sourceCell">The cell of the piece being moved.</param>
+    /// <param name="team">The team colour to query for check.</param>
+    /// <returns><c>true</c> if the move would result in the given team being in check.</returns>
+    public bool willCauseCheck(Cell targetCell, Cell sourceCell, TeamColour team)
+    {
+        // Temporarily move the piece to the target cell
+        Piece originalPiece = sourceCell.occupant;
+        Piece targetPiece = targetCell.occupant;
+        targetCell.occupant = originalPiece;
+        sourceCell.occupant = null;
+
+        // temporarily update the pieces as well
+        if (originalPiece!=null) originalPiece.Cell = targetCell;
+        if (targetPiece!=null) targetPiece.Cell = null;
+
+        // check moves again based on the new positions 
+        RegenerateMoves(false);
+
+        // see if the king is in check in the temporary position
+        bool inCheck = checkForInCheck(team);
+
+        // Revert the move
+        sourceCell.occupant = originalPiece;
+        targetCell.occupant = targetPiece;
+        // make the reassignment twice, as this will prevent the piece sliding from the test position 
+        // to its original position when you make an invalid move
+        if (originalPiece!=null) {
+            originalPiece.Cell = sourceCell;
+            originalPiece.Cell = sourceCell;
+        } if (targetPiece!=null) {
+            targetPiece.Cell = targetCell;
+            targetPiece.Cell = targetCell;
+        }
+
+        // re-regenerate the moves with the original board position
+        RegenerateMoves(false);
+
+        return inCheck;
+    }
 }

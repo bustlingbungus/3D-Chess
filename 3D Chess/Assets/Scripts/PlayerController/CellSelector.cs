@@ -89,7 +89,7 @@ public class CellSelector : MonoBehaviour
         move_select.enabled = false;
         movement_controls.enabled = true;
         current_player = current_player == TeamColour.White ? TeamColour.Black : TeamColour.White;
-        _board.RegenerateMoves();
+        _board.RegenerateMoves(true);
         LookForStalemate();
     }
 
@@ -103,8 +103,7 @@ public class CellSelector : MonoBehaviour
     private bool cell_select_input()
     {
         return Input.GetKeyDown(select) && !move_select.enabled &&
-               cell != null && cell.occupant != null && cell.occupant.Colour == current_player &&
-               !IsDiscoveredCheck(cell);
+               cell != null && cell.occupant != null && cell.occupant.Colour == current_player;
     }
 
     [ContextMenu("Look for checkmate")]
@@ -131,42 +130,5 @@ public class CellSelector : MonoBehaviour
         }
         if (inCheck) Debug.Log("Checkmate!");
         else Debug.Log("Stalemate!");
-    }
-    private bool checkForInCheck()
-    {
-        GameObject[] pieces = GameObject.FindGameObjectsWithTag("Piece");
-        TeamColour opposite = current_player == TeamColour.White ? TeamColour.Black : TeamColour.White;
-        foreach (GameObject obj in pieces)
-        {
-            Piece piece = obj.GetComponent<Piece>();
-            if (piece.Colour == opposite)
-            {
-                foreach (MoveInfo move in piece.available_moves)
-                {
-                    if (move.cell.occupant != null && move.cell.occupant.Type == PieceType.King)
-                    {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    private bool IsDiscoveredCheck(Cell targetCell)
-    {
-        // Temporarily move the piece to the target cell
-        Piece originalPiece = cell.occupant;
-        Piece targetPiece = targetCell.occupant;
-        targetCell.occupant = originalPiece;
-        cell.occupant = null;
-
-        bool inCheck = checkForInCheck();
-
-        // Revert the move
-        cell.occupant = originalPiece;
-        targetCell.occupant = targetPiece;
-
-        return inCheck;
     }
 }
