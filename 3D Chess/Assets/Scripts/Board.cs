@@ -207,4 +207,9 @@ public class Board : MonoBehaviour
 
         return inCheck;
     }
+
+    public void ResetGame()
+    {
+        
+    }
 }

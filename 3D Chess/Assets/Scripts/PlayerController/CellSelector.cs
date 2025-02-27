@@ -15,6 +15,11 @@ public class CellSelector : MonoBehaviour
     [SerializeField]
     private Camera cam;
 
+    [SerializeField]
+    private GameObject movementUI;
+    [SerializeField]
+    private GameObject selectUI;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -36,6 +41,9 @@ public class CellSelector : MonoBehaviour
             move_select.enabled = true;
             movement_controls.enabled = false;
             move_select.GetMoves(cell.occupant);
+
+            movementUI.SetActive(false);
+            selectUI.SetActive(true);
         }
 
         cam.backgroundColor = colour_lerp(col_a, col_b, turn_timer / turnChangeTime);
@@ -115,6 +123,9 @@ public class CellSelector : MonoBehaviour
         col_a = col_b;
         col_b = temp;
         turn_timer = 0f;
+
+        movementUI.SetActive(true);
+        selectUI.SetActive(false);
     }
 
     public void ExitSelection()
@@ -122,6 +133,9 @@ public class CellSelector : MonoBehaviour
         RaiseAlpha();
         move_select.enabled = false;
         movement_controls.enabled = true;
+
+        movementUI.SetActive(true);
+        selectUI.SetActive(false);
     }
 
     private bool cell_select_input()
