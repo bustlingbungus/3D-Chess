@@ -129,7 +129,10 @@ public class Board : MonoBehaviour
         // get a list of pieces as Piece objects
         GameObject[] objs = GameObject.FindGameObjectsWithTag("Piece");
         List<Piece> pieces = new List<Piece>();
-        foreach (GameObject obj in objs) pieces.Add(obj.GetComponent<Piece>());
+        foreach (GameObject obj in objs) {
+            Piece p = obj.GetComponent<Piece>();
+            if (p.Cell != null) pieces.Add(p);
+        }
 
         // regenerate the moves for each piece
         foreach (Piece p in pieces) p.RegenerateMoves();
@@ -184,12 +187,10 @@ public class Board : MonoBehaviour
         // Temporarily move the piece to the target cell
         Piece originalPiece = sourceCell.occupant;
         Piece targetPiece = targetCell.occupant;
-        targetCell.occupant = originalPiece;
-        sourceCell.occupant = null;
 
-        // temporarily update the pieces as well
-        if (originalPiece!=null) originalPiece.Cell = targetCell;
+        // temporarily update the pieces and cells
         if (targetPiece!=null) targetPiece.Cell = null;
+        if (originalPiece!=null) originalPiece.Cell = targetCell;
 
         // check moves again based on the new positions 
         RegenerateMoves(false);
@@ -198,17 +199,8 @@ public class Board : MonoBehaviour
         bool inCheck = checkForInCheck(team);
 
         // Revert the move
-        sourceCell.occupant = originalPiece;
-        targetCell.occupant = targetPiece;
-        // make the reassignment twice, as this will prevent the piece sliding from the test position 
-        // to its original position when you make an invalid move
-        if (originalPiece!=null) {
-            originalPiece.Cell = sourceCell;
-            originalPiece.Cell = sourceCell;
-        } if (targetPiece!=null) {
-            targetPiece.Cell = targetCell;
-            targetPiece.Cell = targetCell;
-        }
+        if (originalPiece!=null) originalPiece.Cell = sourceCell;
+        if (targetPiece!=null) targetPiece.Cell = targetCell;
 
         // re-regenerate the moves with the original board position
         RegenerateMoves(false);

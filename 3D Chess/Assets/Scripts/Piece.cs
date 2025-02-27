@@ -115,14 +115,13 @@ public abstract class Piece : MonoBehaviour
     {
         get => _cell;
         set {
-            if (value != null) {
-                // remove self from current cell, set init pos for interpolation
-                if (_cell!=null) _cell.occupant = null;
-                // assign _cell
-                _cell = value;
-                // make self the new cell occupant
-                _cell.occupant = this;
-            }
+            // remove self from current cell, set init pos for interpolation
+            if (_cell!=null) _cell.occupant = null;
+            // assign _cell
+            _cell = value;
+            // make self the new cell occupant
+            if (_cell!=null) _cell.occupant = this;
+            
         }
     }
 
@@ -152,7 +151,7 @@ public abstract class Piece : MonoBehaviour
     private Stack<int> prune_moves;
 
     /// <summary> The number of moves this piece has made. </summary>
-    public int move_cnt = -1;
+    public int move_cnt = 0;
 
 
 
@@ -283,7 +282,9 @@ public abstract class Piece : MonoBehaviour
     /// <param name="type">The piece type, e.g. pawn, queen, etc.</param>
     public void piece_init(PieceType type)
     {
+        // intialise members
         _type = type;
+        move_cnt = 0;
 
         // rotate pieces 180 if they're black, 0 if they're white
         if (colour == TeamColour.Black) transform.eulerAngles = new Vector3(0f, 180f, 0f);
