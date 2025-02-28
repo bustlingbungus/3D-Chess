@@ -123,6 +123,7 @@ MonoBehaviour:
   colour: 0
   _board: {fileID: 0}
   move_cnt: -1
+  queenPrefab: {fileID: 2638321979307631307, guid: 069c3a511004f6e46a62356a0931350e, type: 3}
 --- !u!4 &7855199477632930751 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 7d450df739f59ed499833caddbd91d6b, type: 3}

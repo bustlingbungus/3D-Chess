@@ -2,12 +2,40 @@ using System.Collections.Generic;
 using UnityEngine;
 using Defs;
 
+// WHITE: x = 7 or y = 0
+// BLACK: x = 0 or y = 7
+
 public class Pawn : Piece
 {
+    [SerializeField]
+    GameObject queenPrefab;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         piece_init(PieceType.Pawn);
+    }
+
+    void Update()
+    {
+        piece_update();
+
+        if (Cell!=null) 
+        {
+            int x, y;
+            if (Colour == TeamColour.White) {
+                x = 7; y = 0;
+            } else {
+                x = 0; y = 7;
+            }
+            
+            if (Cell.index.x==x || Cell.index.y==y)
+            {
+                Instantiate(queenPrefab, Cell.transform.position, Quaternion.identity, transform.parent);
+                Destroy(gameObject);
+                _board.RegenerateMoves(true);
+            }
+        }
     }
 
     public override List<Cell> find_valid_moves()
