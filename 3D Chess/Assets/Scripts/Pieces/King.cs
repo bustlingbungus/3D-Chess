@@ -15,48 +15,59 @@ public class King : Piece
         List<Cell> res = new List<Cell>();
         TeamColour opposite_colour = Colour == TeamColour.White ? TeamColour.Black : TeamColour.White;
 
-        // orthogonal movements
-        for (int i = 0; i < 6; i++)
+        // 9 moves in +x
+        Vector3Int index = Cell.index + new Vector3Int(1,-1,-1);
+        for (int i=1; i<=9; i++)
         {
-            // find displacement by i's value
-            Vector3Int disp = new Vector3Int(i < 2 ? 1 : 0, i < 4 && i > 1 ? 1 : 0, i < 6 && i > 3 ? 1 : 0);
-            if (i % 2 == 1) disp *= -1;
-
-            // check current displacement
-            Cell curr = _board.GetCellAt(Cell.index + disp);
+            // check current cell
+            Cell curr = _board.GetCellAt(index);
             if (curr != null)
             {
                 curr.attackers[Colour].Add(this);
                 if (curr.occupant == null || curr.occupant.Colour != Colour) res.Add(curr);
             }
+
+            if (i%3 == 0) {
+                index.y++; index.z -= 2;
+            } else index.z++;
         }
 
-        // diagonals
-        for (int i = 0; i < 8; i++)
+        // 8 moves in the +0x plane
+        index = Cell.index + new Vector3Int(0,-1,-1);
+        for (int i=1; i<=9; i++)
         {
-            // find displacement with binary counting
-            Vector3Int disp = new Vector3Int((i & 4) != 0 ? 1 : -1, (i & 2) != 0 ? 1 : -1, (i & 1) != 0 ? 1 : -1);
-
-            // check current displacement
-            Cell curr = _board.GetCellAt(Cell.index + disp);
-            if (curr != null)
+            if (index != Cell.index) 
             {
-                curr.attackers[Colour].Add(this);
-                if (curr.occupant == null || curr.occupant.Colour != Colour) res.Add(curr);
+                // check current cell
+                Cell curr = _board.GetCellAt(index);
+                if (curr != null)
+                {
+                    curr.attackers[Colour].Add(this);
+                    if (curr.occupant == null || curr.occupant.Colour != Colour) res.Add(curr);
+                }
             }
+
+
+            if (i%3 == 0) {
+                index.y++; index.z -= 2;
+            } else index.z++;
         }
 
-        // 2 dimensional diagonals
-        for (int i = 0; i < 12; i++)
+        // 9 moves in -x
+        index = Cell.index + new Vector3Int(-1,-1,-1);
+        for (int i=1; i<=9; i++)
         {
-            Vector3Int disp = new Vector3Int(i < 8 ? i < 4 ? -1 : 1 : 0, i < 8 ? (i % 2) == 1 ? (i % 4) == 1 ? -1 : 1 : 0 : i < 10 ? -1 : 1, i < 8 ? (i % 2) == 0 ? (i % 4) == 0 ? -1 : 1 : 0 : (i % 2) == 0 ? -1 : 1);
-            // check current displacement
-            Cell curr = _board.GetCellAt(Cell.index + disp);
+            // check current cell
+            Cell curr = _board.GetCellAt(index);
             if (curr != null)
             {
                 curr.attackers[Colour].Add(this);
                 if (curr.occupant == null || curr.occupant.Colour != Colour) res.Add(curr);
             }
+
+            if (i%3 == 0) {
+                index.y++; index.z -= 2;
+            } else index.z++;
         }
         
         // if (move_cnt == 0)

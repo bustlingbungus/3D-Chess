@@ -2036,9 +2036,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57fcc028a60b39c459db13037cb507ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  whiteTurn: {r: 0.4811321, g: 0.43239772, b: 0.36538804, a: 0}
-  blackTurn: {r: 0.16981131, g: 0.12881029, b: 0.0969206, a: 0}
-  turnChangeTime: 0.5
+  whiteTurn: {r: 0.5471698, g: 0.4968405, b: 0.43102527, a: 0}
+  blackTurn: {r: 0.14052057, g: 0.11681204, b: 0.3301887, a: 0}
+  turnChangeTime: 0.75
   cam: {fileID: 330585545}
   movementUI: {fileID: 473741110}
   pieceMovingUI: {fileID: 679289502}
@@ -27787,11 +27787,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8035650433929012482, guid: 4a6469363947d51469d20b6abfbb715e, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -5.802
+      value: -5.76
       objectReference: {fileID: 0}
     - target: {fileID: 8035650433929012482, guid: 4a6469363947d51469d20b6abfbb715e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 5.952
+      value: 5.945
       objectReference: {fileID: 0}
     - target: {fileID: 8035650433929012482, guid: 4a6469363947d51469d20b6abfbb715e, type: 3}
       propertyPath: m_LocalPosition.z
