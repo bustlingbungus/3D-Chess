@@ -35,6 +35,8 @@ public class CellSelector : MonoBehaviour
         turn_timer = turnChangeTime;
 
         cam.backgroundColor = whiteTurn;
+
+        RaiseAlpha();
     }
 
     // Update is called once per frame
@@ -101,7 +103,7 @@ public class CellSelector : MonoBehaviour
         Color newCol = material.color;
         newCol.a = newAlpha;
         material.color = newCol;
-        if (cell.occupant != null)
+        if (cell!=null && cell.occupant != null)
         {
             foreach (Transform child in cell.occupant.transform)
             {

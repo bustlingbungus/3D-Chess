@@ -6,10 +6,13 @@ public class SelectionPopUp : MonoBehaviour
 {
     [SerializeField]
     private TMP_Text pieceInfo;
+    [SerializeField]
+    private GameObject popUp;
 
     public void SetPiece(Piece piece)
     {
-        transform.parent.gameObject.SetActive(true);
+        popUp.SetActive(true);
+        gameObject.SetActive(true);
         
         string ptype, pcolour = piece.Colour==TeamColour.White? "White ":"Black ";
         switch (piece.Type)
@@ -28,6 +31,7 @@ public class SelectionPopUp : MonoBehaviour
 
     public void Hide()
     {
-        transform.parent.gameObject.SetActive(false);
+        popUp.SetActive(false);
+        gameObject.SetActive(false);
     }
 }
