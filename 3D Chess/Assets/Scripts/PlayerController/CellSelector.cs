@@ -18,7 +18,7 @@ public class CellSelector : MonoBehaviour
     [SerializeField]
     private GameObject pieceMovingUI;
     [SerializeField]
-    private GameObject selectPopUpUI;
+    private SelectionPopUp selectPopUpUI;
     [SerializeField]
     private GameObject gameOverUI;
 
@@ -48,12 +48,12 @@ public class CellSelector : MonoBehaviour
             move_select.GetMoves(cell.occupant);
 
             movementUI.SetActive(false);
-            selectPopUpUI.SetActive(false);
+            selectPopUpUI.Hide();
             pieceMovingUI.SetActive(true);
         }
-        else if (!move_select.enabled && cell!=null && cell.occupant!=null && cell.occupant.Colour==current_player) {
-            selectPopUpUI.SetActive(true);
-        } else selectPopUpUI.SetActive(false);
+        else if (!move_select.enabled && cell!=null && cell.occupant!=null) {
+            selectPopUpUI.SetPiece(cell.occupant);
+        } else selectPopUpUI.Hide();
 
         cam.backgroundColor = colour_lerp(col_a, col_b, turn_timer / turnChangeTime);
         turn_timer = Mathf.Clamp(turn_timer+Time.deltaTime, 0f, turnChangeTime);
