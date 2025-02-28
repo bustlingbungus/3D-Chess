@@ -50,6 +50,9 @@ public class Board : MonoBehaviour
     [SerializeField]
     private GameObject gameOverUI;
 
+    [SerializeField]
+    private KeyCode reset;
+
 
     /* ==========  MAIN FUNCTIONS  ========== */
 
@@ -104,6 +107,8 @@ public class Board : MonoBehaviour
         {
             if (regen_moves--==1) RegenerateMoves(true);
         }
+
+        if (Input.GetKeyDown(reset)) ResetGame();
     }
 
     /// <summary>
