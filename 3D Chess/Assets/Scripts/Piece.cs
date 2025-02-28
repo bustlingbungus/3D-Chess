@@ -182,7 +182,6 @@ public abstract class Piece : MonoBehaviour
     [ContextMenu("Show Moves")]
     public void ShowMoves() {
         foreach (MoveInfo move in available_moves) {
-            if (move.indicator==null) Debug.Log("it's null here");
             move.indicator.SetActive(true);
         }
     }
@@ -285,6 +284,7 @@ public abstract class Piece : MonoBehaviour
         // intialise members
         _type = type;
         move_cnt = 0;
+        available_moves = new List<MoveInfo>();
 
         // rotate pieces 180 if they're black, 0 if they're white
         if (colour == TeamColour.Black) transform.eulerAngles = new Vector3(0f, 180f, 0f);

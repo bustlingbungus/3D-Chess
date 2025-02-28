@@ -23,7 +23,7 @@ public class Board : MonoBehaviour
     /// <summary> 3D array of cell objects. </summary>
     private Cell[,,] grid;
     /// <summary> Flag for when piece moves should be regenerated. </summary>
-    private bool regen_moves = true;
+    private int regen_moves = 1;
 
     private List<SpawnInfo> initial_pieces;
 
@@ -44,6 +44,11 @@ public class Board : MonoBehaviour
     [SerializeField]
     private GameObject whitePieceParent,
                        blackPieceParent;
+
+    [SerializeField]
+    private CellSelector selector;
+    [SerializeField]
+    private GameObject gameOverUI;
 
 
     /* ==========  MAIN FUNCTIONS  ========== */
@@ -95,10 +100,9 @@ public class Board : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (regen_moves)
+        if (regen_moves != 0)
         {
-            RegenerateMoves(true);
-            regen_moves = false;
+            if (regen_moves--==1) RegenerateMoves(true);
         }
     }
 
@@ -263,9 +267,11 @@ public class Board : MonoBehaviour
             Instantiate(prefab, piece_spawn.pos, Quaternion.identity, parent.transform);
         }
 
-        CellSelector selector = GameObject.FindGameObjectWithTag("Main Selector").GetComponent<CellSelector>();
-        selector.current_player = TeamColour.White;
-        regen_moves = true;
+        selector.gameObject.SetActive(true);
+        selector.Cell = GetCellAt(0,0,0);
+        if (selector.current_player!=TeamColour.White) selector.ChangeTurn();
+        gameOverUI.SetActive(false);
+        regen_moves = 2;
     }
 
     private GameObject get_prefab(SpawnInfo info)
