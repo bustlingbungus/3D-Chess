@@ -51,7 +51,7 @@ public class Board : MonoBehaviour
     private GameObject gameOverUI;
 
     [SerializeField]
-    private KeyCode reset;
+    private KeyCode reset, quit;
 
 
     /* ==========  MAIN FUNCTIONS  ========== */
@@ -109,6 +109,7 @@ public class Board : MonoBehaviour
         }
 
         if (Input.GetKeyDown(reset)) ResetGame();
+        if (Input.GetKeyDown(quit)) QuitGame();
     }
 
     /// <summary>
@@ -277,6 +278,11 @@ public class Board : MonoBehaviour
         if (selector.current_player!=TeamColour.White) selector.ChangeTurn();
         gameOverUI.SetActive(false);
         regen_moves = 2;
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
     }
 
     private GameObject get_prefab(SpawnInfo info)
