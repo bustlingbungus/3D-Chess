@@ -65,4 +65,19 @@ namespace Defs
         /// <summary> Index of the node in graph. </summary>
         public int idx;
     }
+
+    [System.Serializable]
+    public class SpawnInfo
+    {
+        public SpawnInfo(Vector3Int Index, PieceType Type, TeamColour Colour) {
+            type = Type; colour = Colour;
+            pos = (2*Index) - new Vector3(7f,7f,7f);
+        }
+        public SpawnInfo(Vector3 Position, PieceType Type, TeamColour Colour) {
+            type = Type; colour = Colour; pos = Position;
+        }
+        public Vector3 pos;
+        public PieceType type;
+        public TeamColour colour;
+    }
 }

@@ -3,6 +3,7 @@ using Unity.VisualScripting;
 using UnityEditor.Rendering.Universal;
 using UnityEngine;
 using Defs;
+using System.ComponentModel;
 
 /// <summary>
 /// Main storge for 3D array of cell objects.
@@ -15,6 +16,7 @@ public class Board : MonoBehaviour
     [SerializeField]
     private GameObject cell_prefab;
     /// <summary> xyz dimensions of the 3D array. </summary>
+    [HideInInspector]
     public Vector3Int grid_dimensions = new Vector3Int(8, 8, 8);
 
 
@@ -23,7 +25,25 @@ public class Board : MonoBehaviour
     /// <summary> Flag for when piece moves should be regenerated. </summary>
     private bool regen_moves = true;
 
+    private List<SpawnInfo> initial_pieces;
 
+    [SerializeField]
+    private GameObject  blackPawnPrefab,
+                        blackKnightPrefab,
+                        blackBishopPrefab,
+                        blackRookPrefab,
+                        blackQueenPrefab,
+                        blackKingPrefab,
+                        whitePawnPrefab,
+                        whiteKnightPrefab,
+                        whiteBishopPrefab,
+                        whiteRookPrefab,
+                        whiteQueenPrefab,
+                        whiteKingPrefab;
+    
+    [SerializeField]
+    private GameObject whitePieceParent,
+                       blackPieceParent;
 
 
     /* ==========  MAIN FUNCTIONS  ========== */
@@ -59,6 +79,16 @@ public class Board : MonoBehaviour
                     grid[cell.index.x, cell.index.y, cell.index.z] = cell;
                 }
             }
+        }
+
+        // populate initial pieces
+        GameObject[] pieces = GameObject.FindGameObjectsWithTag("Piece");
+        initial_pieces = new List<SpawnInfo>();
+        foreach (GameObject obj in pieces)
+        {
+            Piece p = obj.GetComponent<Piece>();
+            SpawnInfo info = new SpawnInfo(p.transform.position, p.Type, p.Colour);
+            initial_pieces.Add(info);
         }
     }
 
@@ -208,8 +238,53 @@ public class Board : MonoBehaviour
         return inCheck;
     }
 
+    [ContextMenu("Reset Game")]
     public void ResetGame()
     {
-        
+        // clear all remaining pieces
+        GameObject[] pieces = GameObject.FindGameObjectsWithTag("Piece");
+        foreach (GameObject p in pieces) Destroy(p);
+
+        // empty attackers/occupant of all cells
+        foreach (Cell cell in grid)
+        {
+            cell.occupant = null;
+            cell.attackers = new Dictionary<TeamColour, List<Piece>>();
+            // i know it says initialisation can be simplified, but trust me the alternative is ugly and less simple.
+            cell.attackers.Add(TeamColour.White, new List<Piece>());
+            cell.attackers.Add(TeamColour.Black, new List<Piece>());
+        }
+
+        // spawn new pieces
+        foreach (SpawnInfo piece_spawn in initial_pieces)
+        {
+            GameObject prefab = get_prefab(piece_spawn);
+            GameObject parent = piece_spawn.colour==TeamColour.White? whitePieceParent : blackPieceParent;
+            Instantiate(prefab, piece_spawn.pos, Quaternion.identity, parent.transform);
+        }
+
+        CellSelector selector = GameObject.FindGameObjectWithTag("Main Selector").GetComponent<CellSelector>();
+        selector.current_player = TeamColour.White;
+        regen_moves = true;
+    }
+
+    private GameObject get_prefab(SpawnInfo info)
+    {
+        switch (info.type)
+        {
+            case PieceType.Pawn: 
+                return info.colour==TeamColour.White? whitePawnPrefab : blackPawnPrefab;
+            case PieceType.Rook: 
+                return info.colour==TeamColour.White? whiteRookPrefab : blackRookPrefab;
+            case PieceType.Knight: 
+                return info.colour==TeamColour.White? whiteKnightPrefab : blackKnightPrefab;
+            case PieceType.Bishop: 
+                return info.colour==TeamColour.White? whiteBishopPrefab : blackBishopPrefab;
+            case PieceType.Queen: 
+                return info.colour==TeamColour.White? whiteQueenPrefab : blackQueenPrefab;
+            case PieceType.King: 
+                return info.colour==TeamColour.White? whiteKingPrefab : blackKingPrefab;
+        }
+        return null;
     }
 }

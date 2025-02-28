@@ -1,5 +1,6 @@
 using UnityEngine;
 using Defs;
+using TMPro;
 
 public class CellSelector : MonoBehaviour
 {
@@ -19,6 +20,8 @@ public class CellSelector : MonoBehaviour
     private GameObject movementUI;
     [SerializeField]
     private GameObject selectUI;
+    [SerializeField]
+    private GameObject gameOverUI;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -65,7 +68,7 @@ public class CellSelector : MonoBehaviour
         }
     }
 
-    private TeamColour current_player = TeamColour.White;
+    public TeamColour current_player = TeamColour.White;
 
     private Cell cell;
 
@@ -161,7 +164,7 @@ public class CellSelector : MonoBehaviour
             {
                 if (piece.available_moves.Count > 0)
                 {
-                    Debug.Log("Not Checkmate");
+                    // Debug.Log("Not Checkmate");
                     return;
                 }
                 else if (piece.Type == PieceType.King)
@@ -170,7 +173,28 @@ public class CellSelector : MonoBehaviour
                 }
             }
         }
-        if (inCheck) Debug.Log("Checkmate!");
-        else Debug.Log("Stalemate!");
+        
+        EndGame(inCheck);
+    }
+
+    [ContextMenu("End game")]
+    void ForceStalemate() { EndGame(false); }
+
+    void EndGame(bool isCheckmate)
+    {
+        gameOverUI.SetActive(true);
+
+        TMP_Text main_text = gameOverUI.transform.GetChild(1).GetComponent<TMP_Text>();
+        TMP_Text sub_text = gameOverUI.transform.GetChild(2).GetComponent<TMP_Text>();
+
+        if (isCheckmate) {
+            main_text.SetText("Checkmate!");
+            sub_text.SetText(current_player==TeamColour.White? "Black wins!":"White wins!");
+        } else {
+            main_text.SetText("Stalemate!");
+            sub_text.SetText(" ");
+        }
+
+        gameObject.SetActive(false);
     }
 }
