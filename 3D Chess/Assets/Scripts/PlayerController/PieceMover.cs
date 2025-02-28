@@ -5,25 +5,25 @@ using Defs;
 
 public class PieceMover : MonoBehaviour
 {
-    [SerializeField]
-    private KeyCode nextSelection = KeyCode.RightArrow,
-                    previousSelection = KeyCode.LeftArrow,
-                    selectCell = KeyCode.Return,
-                    cancel = KeyCode.Escape;
-
+    private InputManager input;
     private Piece curr_piece;
     private int curr_idx = 0;
 
     [SerializeField]
     private CellSelector selector;
 
+    void Start()
+    {
+        input = GameObject.FindGameObjectWithTag("InputManager").GetComponent<InputManager>();
+    }
+
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(nextSelection)) select_move(curr_idx+1);
-        if (Input.GetKeyDown(previousSelection)) select_move(curr_idx-1);
-        if (Input.GetKeyDown(selectCell)) SelectCurrent();
-        if (Input.GetKeyDown(cancel)) selector.ExitSelection();
+        if (input.CycleNext) select_move(curr_idx+1);
+        if (input.CyclePrevious) select_move(curr_idx-1);
+        if (input.Select) SelectCurrent();
+        if (input.Cancel) selector.ExitSelection();
     }
 
     public void SelectCurrent()

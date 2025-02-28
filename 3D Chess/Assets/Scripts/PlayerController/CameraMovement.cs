@@ -15,12 +15,7 @@ public class CameraMovement : MonoBehaviour
 {
     /* ==========  MEMBERS  ========== */
 
-    /// <summary> Keybinds to pan the camera in different connections. </summary>
-    [SerializeField]
-    private KeyCode panUp = KeyCode.I,
-                    panDown = KeyCode.K,
-                    panLeft = KeyCode.J,
-                    panRight = KeyCode.L;
+    private InputManager input;
     
     /// <summary> The amount of time the camera takes to transition between viewing locations. </summary>
     [SerializeField]
@@ -61,6 +56,8 @@ public class CameraMovement : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        input = GameObject.FindGameObjectWithTag("InputManager").GetComponent<InputManager>();
+
         // initialise the vertex graph and add all the viewing locations.
         graph = new AdjacencyGraph<CameraNode>();
 
@@ -104,43 +101,43 @@ public class CameraMovement : MonoBehaviour
         graph.AddEdge(4, 0, GraphDirection.Down);  // front face
         graph.AddEdge(4, 5, GraphDirection.Right);  // top (right down)
         graph.AddEdge(4, 7, GraphDirection.Left);  // top face (left down)
-        graph.AddEdge(4, 6, GraphDirection.Up);  // top face (back down)
+        // graph.AddEdge(4, 6, GraphDirection.Up);  // top face (back down)
         // top face (right down)
         graph.AddEdge(5, 1, GraphDirection.Down);  // right face
         graph.AddEdge(5, 6, GraphDirection.Right);  // top (back down)
         graph.AddEdge(5, 4, GraphDirection.Left);  // top face (front down)
-        graph.AddEdge(5, 7, GraphDirection.Up);  // top face (left down)
+        // graph.AddEdge(5, 7, GraphDirection.Up);  // top face (left down)
         // top face (back down)
         graph.AddEdge(6, 2, GraphDirection.Down);  // back face
         graph.AddEdge(6, 7, GraphDirection.Right);  // top (left down)
         graph.AddEdge(6, 5, GraphDirection.Left);  // top face (right down)
-        graph.AddEdge(6, 4, GraphDirection.Up);  // top face (front down)
+        // graph.AddEdge(6, 4, GraphDirection.Up);  // top face (front down)
         // top face (left down)
         graph.AddEdge(7, 3, GraphDirection.Down);  // left face
         graph.AddEdge(7, 4, GraphDirection.Right);  // top (front down)
         graph.AddEdge(7, 6, GraphDirection.Left);  // top face (back down)
-        graph.AddEdge(7, 5, GraphDirection.Up);  // top face (right down)
+        // graph.AddEdge(7, 5, GraphDirection.Up);  // top face (right down)
         
         // bottom face (front down)
-        graph.AddEdge(8, 0, GraphDirection.Down);  // front face
+        graph.AddEdge(8, 0, GraphDirection.Up);  // front face
         graph.AddEdge(8, 9, GraphDirection.Right);  // bottom (right down)
         graph.AddEdge(8, 11, GraphDirection.Left);  // bottom face (left down)
-        graph.AddEdge(8, 10, GraphDirection.Up);  // bottom face (back down)
+        // graph.AddEdge(8, 10, GraphDirection.Up);  // bottom face (back down)
         // bottom face (right down)
-        graph.AddEdge(9, 1, GraphDirection.Down);  // right face
+        graph.AddEdge(9, 1, GraphDirection.Up);  // right face
         graph.AddEdge(9, 10, GraphDirection.Right);  // bottom (back down)
         graph.AddEdge(9, 8, GraphDirection.Left);  // bottom face (front down)
-        graph.AddEdge(9, 11, GraphDirection.Up);  // bottom face (left down)
+        // graph.AddEdge(9, 11, GraphDirection.Up);  // bottom face (left down)
         // bottom face (back down)
-        graph.AddEdge(10, 2, GraphDirection.Down);  // back face
+        graph.AddEdge(10, 2, GraphDirection.Up);  // back face
         graph.AddEdge(10, 11, GraphDirection.Right);  // bottom (left down)
         graph.AddEdge(10, 9, GraphDirection.Left);  // bottom face (right down)
-        graph.AddEdge(10, 8, GraphDirection.Up);  // bottom face (front down)
+        // graph.AddEdge(10, 8, GraphDirection.Up);  // bottom face (front down)
         // bottom face (left down)
-        graph.AddEdge(11, 3, GraphDirection.Down);  // left face
+        graph.AddEdge(11, 3, GraphDirection.Up);  // left face
         graph.AddEdge(11, 8, GraphDirection.Right);  // bottom (front down)
         graph.AddEdge(11, 10, GraphDirection.Left);  // bottom face (back down)
-        graph.AddEdge(11, 9, GraphDirection.Up);  // bottom face (right down)
+        // graph.AddEdge(11, 9, GraphDirection.Up);  // bottom face (right down)
 
         // initilaise camera position
         curr_node = graph.GetVertexAt(0);
@@ -151,10 +148,10 @@ public class CameraMovement : MonoBehaviour
     void Update()
     {
         // move to the next node in the direction selected by user input, if any
-        if (Input.GetKeyDown(panUp))    Node = graph.GetFirstOutgoing(Node.idx, GraphDirection.Up);
-        else if (Input.GetKeyDown(panDown))  Node = graph.GetFirstOutgoing(Node.idx, GraphDirection.Down);
-        else if (Input.GetKeyDown(panLeft))  Node = graph.GetFirstOutgoing(Node.idx, GraphDirection.Left);
-        else if (Input.GetKeyDown(panRight)) Node = graph.GetFirstOutgoing(Node.idx, GraphDirection.Right);
+        if (input.PanUp)    Node = graph.GetFirstOutgoing(Node.idx, GraphDirection.Up);
+        else if (input.PanDown)  Node = graph.GetFirstOutgoing(Node.idx, GraphDirection.Down);
+        else if (input.PanLeft)  Node = graph.GetFirstOutgoing(Node.idx, GraphDirection.Left);
+        else if (input.PanRight) Node = graph.GetFirstOutgoing(Node.idx, GraphDirection.Right);
 
         // move to the position of the new node by interpolation
         float t = move_timer / travelTime;

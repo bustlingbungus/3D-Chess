@@ -8,6 +8,7 @@ TagManager:
   - Cell Highlight
   - Piece
   - Main Selector
+  - InputManager
   layers:
   - Default
   - TransparentFX

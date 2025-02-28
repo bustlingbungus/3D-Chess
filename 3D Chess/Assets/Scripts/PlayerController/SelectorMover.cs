@@ -8,24 +8,17 @@ public class SelectorMover : MonoBehaviour
 {
     /// <summary> Reference to the parent selctor to move around. </summary>
     public CellSelector selector;
-
-    /// <summary> Keybindings for movement directions. </summary>
-    [SerializeField]
-    private KeyCode forward = KeyCode.W,
-                    backward = KeyCode.S,
-                    up = KeyCode.UpArrow,
-                    down = KeyCode.DownArrow,
-                    left = KeyCode.A,
-                    right = KeyCode.D;
     
     /// <summary> Reference to the main board object. </summary>
     private Board board;
+    private InputManager input;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         // get reference to board
         board = GameObject.FindGameObjectWithTag("Main Board").GetComponent<Board>();
+        input = GameObject.FindGameObjectWithTag("InputManager").GetComponent<InputManager>();
     }
 
     // Update is called once per frame
@@ -41,12 +34,12 @@ public class SelectorMover : MonoBehaviour
                     ud = Camera.main.transform.up;
 
             // check for input, and edit the magnitude/direction of the basis vectors before adding them to the index
-            if (Input.GetKeyDown(backward)) fb *= -1f;
-            else if (!Input.GetKeyDown(forward)) fb = Vector3.zero;
-            if (Input.GetKeyDown(right)) lr *= -1f;
-            else if (!Input.GetKeyDown(left)) lr = Vector3.zero;
-            if (Input.GetKeyDown(down)) ud *= -1f;
-            else if (!Input.GetKeyDown(up)) ud = Vector3.zero;
+            if (input.MoveBackwards) fb *= -1f;
+            else if (!input.MoveForwards) fb = Vector3.zero;
+            if (input.MoveRight) lr *= -1f;
+            else if (!input.MoveLeft) lr = Vector3.zero;
+            if (input.MoveDown) ud *= -1f;
+            else if (!input.MoveUp) ud = Vector3.zero;
 
             // make each of the axes have one nonzero member
             correctValues(ref fb);

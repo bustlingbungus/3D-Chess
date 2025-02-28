@@ -5,9 +5,6 @@ using TMPro;
 public class CellSelector : MonoBehaviour
 {
     [SerializeField]
-    private KeyCode select = KeyCode.Return;
-
-    [SerializeField]
     private Color whiteTurn, blackTurn;
     private Color col_a, col_b;
     [SerializeField]
@@ -23,10 +20,13 @@ public class CellSelector : MonoBehaviour
     [SerializeField]
     private GameObject gameOverUI;
 
+    private InputManager input;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         _board = GameObject.FindGameObjectWithTag("Main Board").GetComponent<Board>();
+        input = GameObject.FindGameObjectWithTag("InputManager").GetComponent<InputManager>();
     
         col_a = blackTurn;
         col_b = whiteTurn;
@@ -143,7 +143,7 @@ public class CellSelector : MonoBehaviour
 
     private bool cell_select_input()
     {
-        return Input.GetKeyDown(select) && !move_select.enabled &&
+        return input.Select && !move_select.enabled &&
                cell != null && cell.occupant != null && cell.occupant.Colour == current_player;
     }
 
