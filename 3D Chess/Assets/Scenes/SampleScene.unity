@@ -20798,7 +20798,7 @@ MonoBehaviour:
   selector: {fileID: 90619251}
   gameOverUI: {fileID: 1297823088}
   reset: 32
-  quit: 0
+  quit: 27
 --- !u!1001 &1124401536
 PrefabInstance:
   m_ObjectHideFlags: 0

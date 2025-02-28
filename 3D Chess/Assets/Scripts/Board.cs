@@ -280,8 +280,10 @@ public class Board : MonoBehaviour
         regen_moves = 2;
     }
 
+    [ContextMenu("Quit Game")]
     public void QuitGame()
     {
+        Debug.Log("quitting application");
         Application.Quit();
     }
 
