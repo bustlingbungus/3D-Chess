@@ -21,19 +21,17 @@ public class Cell : MonoBehaviour
         attackers.Add(TeamColour.Black, new List<Piece>());
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     /// <summary>
     /// Shows or hides the cell's index viewer, by enabling/disabling the child object.
     /// </summary>
     [ContextMenu("Toggle Index")]
-    public void ToggleIndexDisplay() {
+    public void ToggleIndexDisplay() 
+    {
+        // get index reference
         var obj = gameObject.transform.GetChild(0).gameObject;
+        // toggle its enabled
         obj.SetActive(!obj.activeSelf);
+        // update the object's text
         if (obj.activeSelf) obj.GetComponent<CellIndex>().UpdateText(index);
     }
 

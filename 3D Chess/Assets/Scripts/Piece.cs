@@ -98,11 +98,13 @@ public abstract class Piece : MonoBehaviour
     /* ==========  PROPERTIES  ========== */
     
     /// <summary> What kind of piece, e.g, pawn, queen, etc. </summary>
-    public PieceType Type {
+    public PieceType Type 
+    {
         get => _type;
     }
     /// <summary> Which player the piece belongs to. </summary>
-    public TeamColour Colour {
+    public TeamColour Colour 
+    {
         get => colour;
     }
 
@@ -114,7 +116,8 @@ public abstract class Piece : MonoBehaviour
     public Cell Cell
     {
         get => _cell;
-        set {
+        set 
+        {
             // remove self from current cell, set init pos for interpolation
             if (_cell!=null) _cell.occupant = null;
             // assign _cell
@@ -180,8 +183,10 @@ public abstract class Piece : MonoBehaviour
     /// <see cref="find_valid_moves"/>
     /// </summary>
     [ContextMenu("Show Moves")]
-    public void ShowMoves() {
-        foreach (MoveInfo move in available_moves) {
+    public void ShowMoves() 
+    {
+        foreach (MoveInfo move in available_moves) 
+        {
             move.indicator.SetActive(true);
         }
     }
@@ -191,8 +196,12 @@ public abstract class Piece : MonoBehaviour
     /// destroying any child object with the tag <c>"Cell Highlight</c>.</para>
     /// </summary>
     [ContextMenu("Hide Moves")]
-    public void HideMoves() {
-        foreach (MoveInfo move in available_moves) move.indicator.SetActive(false);
+    public void HideMoves() 
+    {
+        foreach (MoveInfo move in available_moves) 
+        {
+            move.indicator.SetActive(false);
+        }
     }
 
 
@@ -211,7 +220,8 @@ public abstract class Piece : MonoBehaviour
         // get list of cells the piece can reach
         List<Cell> cells = find_valid_moves();
         // make each cell into a MoveInfo
-        foreach (Cell c in cells) {
+        foreach (Cell c in cells) 
+        {
             available_moves.Add(new MoveInfo(c, this));
         }
     }
@@ -324,10 +334,12 @@ public abstract class Piece : MonoBehaviour
         float best_dist = float.MaxValue;
 
         // iterate over cells and find the distance to each 
-        foreach (Transform cell in _board.transform.GetChild(0)) {
+        foreach (Transform cell in _board.transform.GetChild(0)) 
+        {
             float disp = (cell.transform.position-transform.position).magnitude;
             // new closest cell found
-            if (disp < best_dist) {
+            if (disp < best_dist) 
+            {
                 best_dist = disp;
                 best_cell = cell.GetComponent<Cell>();
             }
@@ -335,7 +347,7 @@ public abstract class Piece : MonoBehaviour
         // update cell reference
         Cell = best_cell;
 
-        // set timer so pieces aren't moveing on instantiation
+        // set timer so pieces aren't moving on instantiation
         if (Cell!=null) transform.position = init_pos = _cell.transform.position;
         movement_timer = travelTime;
     }
@@ -349,7 +361,8 @@ public abstract class Piece : MonoBehaviour
     /// <param name="b">The ending position</param>
     /// <param name="t">Interpolation value, 0-1</param>
     /// <returns>A <c>Vector3</c> representing the interpolated position.</returns>
-    private Vector3 pos_interp(Vector3 a, Vector3 b, float t) {
+    private Vector3 pos_interp(Vector3 a, Vector3 b, float t) 
+    {
         t = 0.5f*(Mathf.Sin(Mathf.PI*(t-0.5f))+1f);
         return a + t*(b - a);
     }

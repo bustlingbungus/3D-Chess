@@ -27,29 +27,40 @@ namespace Defs
     };
 
     /// <summary>
-    /// Container for information about where a piece may move, including the move destination, and 
-    /// whether the move is a capture, or regular movement.
+    /// Information about a potential move.
     /// </summary>
-    public struct Move
-    {
-        public Move(Cell cell_ref, MoveType type) { cell = cell_ref; move_type = type; }
-        /// <summary> Reference to the destination cell. </summary>
-        public Cell cell;
-        /// <summary> For determining if a move is a capture or regular movement. </summary>
-        public enum MoveType { Regular, Attack };
-        /// <summary> Whether or not the move is a capture or regular movement. </summary>
-        public MoveType move_type;
-    };
-
     public struct MoveInfo
     {
-        public MoveInfo (Cell dest, Piece src, GameObject Indicator = null) {
-            cell = dest; piece = src; indicator = Indicator;
+        /// <summary>
+        /// Information about a potential move.
+        /// </summary>
+        /// <param name="dest">Reference to the move's target cell</param>
+        /// <param name="src">Reference to the piece being moved</param>
+        /// <param name="Indicator">Reference to the indicator objects showing the move</param>
+        public MoveInfo (Cell dest, Piece src, GameObject Indicator = null) 
+        {
+            cell = dest; 
+            piece = src; 
+            indicator = Indicator;
         }
+
+        /// <summary> Reference to the move's target cell. </summary>
         public Cell cell;
+
+        /// <summary> Reference to the piece being moved. </summary>
         public GameObject indicator;
+
+        /// <summary> Reference to the indicator objects showing the move. </summary>
         public Piece piece;
-        public bool isAttack() { return cell.occupant != null; }
+
+        /// <summary>
+        /// Whether or not the move will result in a capture. 
+        /// </summary>
+        /// <returns>bool</returns>
+        public bool isAttack() 
+        { 
+            return cell.occupant != null && cell.occupant.Colour!=piece.Colour; 
+        }
     }
 
 
@@ -59,25 +70,61 @@ namespace Defs
     /// </summary>
     public class CameraNode
     {
-        public CameraNode(Vector3 pos, int Idx) { position = pos; idx = Idx; }
+        /// <summary>
+        /// Node in the camera node graph. Contains a position,  and index of itself in the adjacency graph.
+        /// </summary>
+        /// <param name="pos">Target position for the camera.</param>
+        /// <param name="Idx">Index of the node in the graph.</param>
+        public CameraNode(Vector3 pos, int Idx) 
+        { 
+            position = pos; 
+            idx = Idx; 
+        }
+
         /// <summary> Camera position. </summary>
         public Vector3 position;
         /// <summary> Index of the node in graph. </summary>
         public int idx;
     }
 
+    /// <summary>
+    /// Info for where to spawn a piece of a given type and colour.
+    /// </summary>
     [System.Serializable]
     public class SpawnInfo
     {
-        public SpawnInfo(Vector3Int Index, PieceType Type, TeamColour Colour) {
-            type = Type; colour = Colour;
+        /// <summary>
+        /// Info for where to spawn a piece of a given type and colour.
+        /// </summary>
+        /// <param name="Index">Index of the cell to spawn the piece at</param>
+        /// <param name="Type">The type of piece to spawn</param>
+        /// <param name="Colour">The piece's colour</param>
+        public SpawnInfo(Vector3Int Index, PieceType Type, TeamColour Colour) 
+        {
+            type = Type; 
+            colour = Colour;
+            // determine piece position based on index
             pos = (2*Index) - new Vector3(7f,7f,7f);
         }
-        public SpawnInfo(Vector3 Position, PieceType Type, TeamColour Colour) {
-            type = Type; colour = Colour; pos = Position;
+
+        /// <summary>
+        /// Info for where to spawn a piece of a given type and colour.
+        /// </summary>
+        /// <param name="Index">The position to spawn the piece at</param>
+        /// <param name="Type">The type of piece to spawn</param>
+        /// <param name="Colour">The piece's colour</param>
+        public SpawnInfo(Vector3 Position, PieceType Type, TeamColour Colour) 
+        {
+            type = Type; 
+            colour = Colour; 
+            pos = Position;
         }
+
+        /// <summary> The position of the piece to spawn. </summary>
         public Vector3 pos;
+        /// <summary> The type of piece to spawn. </summary>
         public PieceType type;
+        /// <summary> The piece colour to spawn. </summary>
         public TeamColour colour;
     }
 }

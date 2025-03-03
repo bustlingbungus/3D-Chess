@@ -17,7 +17,7 @@ public class Board : MonoBehaviour
     private GameObject cell_prefab;
     /// <summary> xyz dimensions of the 3D array. </summary>
     [HideInInspector]
-    public Vector3Int grid_dimensions = new Vector3Int(8, 8, 8);
+    public static Vector3Int grid_dimensions = new Vector3Int(8, 8, 8);
 
 
     /// <summary> 3D array of cell objects. </summary>
@@ -54,6 +54,8 @@ public class Board : MonoBehaviour
     private KeyCode reset, quit;
 
 
+
+
     /* ==========  MAIN FUNCTIONS  ========== */
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -68,22 +70,26 @@ public class Board : MonoBehaviour
             // Cell positions will begin at -7 on each axis, range until 7, and have a step of 2.
             // this will make the board centred at (0,0,0)
             float xpos = (2f * x) - 7f;
+
             for (int y = 0; y < grid_dimensions.y; y++)
             {
                 float ypos = (2f * y) - 7f;
+
                 for (int z = 0; z < grid_dimensions.z; z++)
                 {
                     // Instantiate cell prefab as a child of cell container, and access the Cell script
-                    Cell cell = Instantiate(
+                    GameObject obj = Instantiate(
                         cell_prefab,
                         new Vector3(xpos, ypos, (2f * z) - 7f),
                         Quaternion.identity,
-                        transform.GetChild(0))
-                            .GetComponent<Cell>();
+                        transform.GetChild(0)
+                    );
+
+                    Cell cell = obj.GetComponent<Cell>();
                     // set the cell's indices
                     cell.index = new Vector3Int(x, y, z);
 
-                    // commit hte finished cell to the array 
+                    // commit the finished cell to the array 
                     grid[cell.index.x, cell.index.y, cell.index.z] = cell;
                 }
             }
@@ -95,7 +101,9 @@ public class Board : MonoBehaviour
         foreach (GameObject obj in pieces)
         {
             Piece p = obj.GetComponent<Piece>();
+            // using the piece objects, save information about their type colour and initial positions
             SpawnInfo info = new SpawnInfo(p.transform.position, p.Type, p.Colour);
+            // save this information for later
             initial_pieces.Add(info);
         }
     }
@@ -103,11 +111,14 @@ public class Board : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // check if piece moves should be regenerated
         if (regen_moves != 0)
         {
-            if (regen_moves--==1) RegenerateMoves(true);
+            // decrement flag counter, and check regen condition
+            if (regen_moves-- == 1) RegenerateMoves(true);
         }
 
+        // check keyboard input
         if (Input.GetKeyDown(reset)) ResetGame();
         if (Input.GetKeyDown(quit)) QuitGame();
     }
